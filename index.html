@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maptap Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:#f9f9f7;--surface:#ffffff;--border:#e8e8e4;--text:#1a1a18;--muted:#888882;
+    --accent:#2563eb;--accent-l:#eff4ff;--green:#16a34a;--red:#dc2626;
+    --radius:10px;--mono:'SF Mono','Fira Mono',monospace;
+    --g5:#16a34a;--g5-bg:#dcfce7;
+    --g4:#65a30d;--g4-bg:#ecfccb;
+    --g3:#ca8a04;--g3-bg:#fef9c3;
+    --g2:#ea580c;--g2-bg:#ffedd5;
+    --g1:#dc2626;--g1-bg:#fee2e2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+  header{padding:20px 16px 0;max-width:680px;margin:0 auto;text-align:center;}
+  .title{font-size:20px;font-weight:700;letter-spacing:-0.3px;line-height:1.2;}
+  .tagline{font-size:13px;color:var(--muted);margin-top:4px;font-style:italic;}
+  .chat-name{font-size:15px;font-weight:600;margin-top:14px;}
+  .export-date{font-size:11px;color:var(--muted);margin-top:1px;}
+
+  nav{display:flex;gap:6px;padding:16px 12px 0;max-width:680px;margin:0 auto;overflow-x:auto;scrollbar-width:none;}
+  nav::-webkit-scrollbar{display:none;}
+  nav button{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;white-space:nowrap;transition:all .15s;}
+  nav button.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+
+  main{max-width:680px;margin:0 auto;padding:16px;}
+  .view{display:none;}.view.active{display:block;}
+
+  .time-toggle{display:flex;gap:6px;margin-bottom:16px;}
+  .time-toggle button{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .time-toggle button.active{background:var(--accent-l);color:var(--accent);border-color:var(--accent);}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;}
+  .card-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+
+  .lb-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .lb-row:last-child{border-bottom:none;}
+  .lb-rank{font-size:16px;width:22px;flex-shrink:0;text-align:center;}
+  .lb-rank.num{font-size:13px;font-weight:600;color:var(--muted);}
+  .lb-main{flex:1;min-width:0;}
+  .lb-name{font-weight:500;font-size:15px;}
+  .lb-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+  .lb-stat{font-family:var(--mono);font-size:14px;font-weight:600;flex-shrink:0;}
+
+  .lb-best-row{padding:10px 0;border-bottom:1px solid var(--border);}
+  .lb-best-row:last-child{border-bottom:none;}
+  .lb-best-top{display:flex;align-items:center;gap:10px;}
+  .lb-best-rounds{display:flex;gap:3px;margin-top:6px;margin-left:32px;flex-wrap:wrap;}
+
+  .today-row{padding:10px 0;border-bottom:1px solid var(--border);}
+  .today-row:last-child{border-bottom:none;}
+  .today-top{display:flex;align-items:center;gap:10px;}
+  .today-name{flex:1;font-weight:500;font-size:15px;}
+  .today-total{font-family:var(--mono);font-weight:700;font-size:16px;}
+  .today-rounds{display:flex;gap:3px;margin-top:5px;flex-wrap:wrap;}
+
+  .round-pill{font-size:11px;font-family:var(--mono);font-weight:600;border-radius:4px;padding:3px 6px;min-width:28px;text-align:center;}
+  .pill-5{background:var(--g5-bg);color:var(--g5);}
+  .pill-4{background:var(--g4-bg);color:var(--g4);}
+  .pill-3{background:var(--g3-bg);color:var(--g3);}
+  .pill-2{background:var(--g2-bg);color:var(--g2);}
+  .pill-1{background:var(--g1-bg);color:var(--g1);}
+
+  .chart-wrap{position:relative;height:240px;margin-bottom:12px;}
+  .player-toggles{display:flex;flex-wrap:wrap;gap:6px;}
+  .player-toggle{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:14px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:var(--surface);user-select:none;transition:all .15s;}
+  .player-toggle.off{opacity:0.4;}
+  .player-toggle .dot{width:8px;height:8px;border-radius:50%;}
+
+  .h2h-selectors{display:flex;gap:8px;margin-bottom:14px;}
+  .h2h-selectors select{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:14px;background:var(--surface);color:var(--text);appearance:none;-webkit-appearance:none;font-weight:500;}
+  .h2h-stats{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-bottom:14px;}
+  .h2h-player{text-align:center;}
+  .h2h-player .icon{font-size:20px;margin-bottom:2px;height:24px;}
+  .h2h-player .big{font-size:32px;font-weight:700;font-family:var(--mono);line-height:1;}
+  .h2h-player .name{font-size:12px;color:var(--muted);margin-top:4px;}
+  .h2h-player .avg{font-size:11px;color:var(--muted);margin-top:2px;}
+  .h2h-vs{font-size:12px;font-weight:600;color:var(--muted);text-align:center;}
+  .h2h-bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-bottom:4px;}
+  .h2h-bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s;}
+  .h2h-label{font-size:11px;color:var(--muted);text-align:center;}
+
+  .blowout-card{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fbbf24;}
+  @media(prefers-color-scheme:dark){.blowout-card{background:linear-gradient(135deg,#3d2f0f,#4a3a13);border-color:#92670a;}}
+  .blowout-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#92670a;margin-bottom:10px;}
+  @media(prefers-color-scheme:dark){.blowout-label{color:#fbbf24;}}
+  .blowout-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:14px;}
+  .blowout-name{flex:1;font-weight:500;}
+  .blowout-score{font-family:var(--mono);font-weight:700;font-size:18px;}
+  .blowout-diff{text-align:center;font-size:12px;color:var(--muted);margin-top:6px;}
+
+  .h2h-games{margin-top:0;}
+  .h2h-games-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .h2h-game-row{display:grid;grid-template-columns:60px 1fr auto 1fr;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .h2h-game-row:last-child{border-bottom:none;}
+  .h2h-date{color:var(--muted);font-size:12px;}
+  .h2h-score{font-family:var(--mono);font-weight:600;}
+  .h2h-score.win{color:var(--green);}
+  .h2h-score.loss{color:var(--red);}
+  .h2h-score.left{text-align:right;}
+  .h2h-diff{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;min-width:36px;}
+
+  .round-tabs{display:flex;gap:4px;margin-bottom:14px;}
+  .round-tabs button{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 4px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .round-tabs button.active{background:var(--accent-l);color:var(--accent);border-color:var(--accent);}
+  .round-legend{display:flex;justify-content:space-around;padding:8px 4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:12px;font-size:13px;}
+  .round-legend span{display:inline-flex;align-items:center;gap:4px;}
+
+  .empty{text-align:center;color:var(--muted);font-size:14px;padding:24px 0;}
+
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#0f0f0e;--surface:#1c1c1a;--border:#2e2e2b;--text:#f0f0ec;--muted:#9c9a92;--accent-l:#1e3a5f;
+      --g5-bg:#0f3b1f;--g4-bg:#3b430f;--g3-bg:#4a3a0c;--g2-bg:#4a2810;--g1-bg:#4a1414;
+      --g5:#4ade80;--g4:#a3e635;--g3:#facc15;--g2:#fb923c;--g1:#f87171;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">🌎 MapTap Analytics 🌎</div>
+  <div class="tagline">who's got the meanest tap?</div>
+  <div class="chat-name" id="chat-name">Loading…</div>
+  <div class="export-date" id="export-date"></div>
+</header>
+
+<nav>
+  <button class="active" onclick="showView('leaderboard')">Leaderboard</button>
+  <button onclick="showView('today')">Today</button>
+  <button onclick="showView('trends')">Trends</button>
+  <button onclick="showView('rounds')">By round</button>
+  <button onclick="showView('h2h')">Head to head</button>
+</nav>
+
+<main>
+  <div class="view active" id="view-today">
+    <div class="card"><div class="card-label" id="today-label">Today</div><div id="today-list"></div></div>
+  </div>
+
+  <div class="view" id="view-leaderboard">
+    <div class="time-toggle" id="lb-toggle"></div>
+    <div class="card"><div class="card-label">Avg total score</div><div id="lb-avg"></div></div>
+    <div class="card"><div class="card-label">Most games played</div><div id="lb-games"></div></div>
+    <div class="card"><div class="card-label">Highest single game</div><div id="lb-best"></div></div>
+  </div>
+
+  <div class="view" id="view-trends">
+    <div class="time-toggle" id="trends-toggle"></div>
+    <div class="card">
+      <div class="card-label">Score over time</div>
+      <div class="chart-wrap"><canvas id="trends-chart"></canvas></div>
+      <div class="player-toggles" id="player-toggles"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-rounds">
+    <div class="time-toggle" id="rounds-toggle"></div>
+    <div class="round-tabs" id="round-tabs"></div>
+    <div class="card"><div class="card-label" id="round-label">Round 1 avg</div><div id="rounds-list"></div></div>
+  </div>
+
+  <div class="view" id="view-h2h">
+    <div class="card">
+      <div class="h2h-selectors"><select id="h2h-p1"></select><select id="h2h-p2"></select></div>
+      <div class="h2h-stats" id="h2h-stats"></div>
+      <div class="h2h-bar"><div class="h2h-bar-fill" id="h2h-bar-fill"></div></div>
+      <div class="h2h-label" id="h2h-bar-label"></div>
+    </div>
+    <div class="card">
+      <div class="h2h-games-label">All shared games</div>
+      <div id="h2h-games"></div>
+    </div>
+    <div class="card blowout-card" id="blowout-card" style="display:none;">
+      <div class="blowout-label">💥 Biggest blowout</div>
+      <div id="blowout-content"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+let ALL=[],PLAYERS=[],CHAT='',activeView='leaderboard',trendsChart=null,currentRound=0;
+let playerVisibility={};
+
+const WINDOWS=[{label:'7d',days:7},{label:'30d',days:30},{label:'All',days:Infinity}];
+const windowState={leaderboard:2,trends:1,rounds:2};
+const COLORS=['#2563eb','#16a34a','#dc2626','#ca8a04','#9333ea','#0891b2','#ea580c','#db2777','#0d9488','#7c3aed'];
+
+function gradeBucket(score){
+  if(score>=90)return 5;
+  if(score>=80)return 4;
+  if(score>=70)return 3;
+  if(score>=50)return 2;
+  return 1;
+}
+function pill(score){
+  return '<span class="round-pill pill-'+gradeBucket(score)+'">'+score+'</span>';
+}
+function rankIcon(rank,total){
+  if(rank===0)return'🎯';
+  if(rank===1)return'🔥';
+  if(rank===2)return'🏅';
+  if(rank===total-1 && total>3)return'🤮';
+  return'<span class="lb-rank num">'+(rank+1)+'</span>';
+}
+function filterByWindow(data,idx){
+  const days=WINDOWS[idx].days;
+  if(days===Infinity)return data;
+  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-days);
+  const cutStr=cutoff.toISOString().slice(0,10);
+  return data.filter(r=>r.date>=cutStr);
+}
+function makeToggle(id,key){
+  document.getElementById(id).innerHTML=WINDOWS.map((w,i)=>
+    '<button class="'+(i===windowState[key]?'active':'')+'" onclick="setWindow(\''+key+'\','+i+')">'+w.label+'</button>'
+  ).join('');
+}
+function setWindow(key,idx){
+  windowState[key]=idx;
+  const id=key==='leaderboard'?'lb-toggle':key+'-toggle';
+  document.querySelectorAll('#'+id+' button').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  renderActive();
+}
+function fmtDate(d){
+  const parts=d.split('-');
+  return parts[1]+'/'+parts[2];
+}
+
+function renderToday(){
+  const today=new Date().toISOString().slice(0,10);
+  let rows=ALL.filter(r=>r.date===today);
+  const label=document.getElementById('today-label');
+  if(!rows.length){
+    const dates=[...new Set(ALL.map(r=>r.date))].sort();
+    const last=dates[dates.length-1];
+    rows=ALL.filter(r=>r.date===last);
+    label.textContent='Most recent — '+last;
+  } else { label.textContent=today; }
+  rows=rows.sort((a,b)=>b.total-a.total);
+  const total=rows.length;
+  document.getElementById('today-list').innerHTML=rows.length
+    ?rows.map((r,i)=>{
+      const pills=r.rounds.map(s=>pill(s)).join('');
+      return '<div class="today-row"><div class="today-top"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="today-name">'+r.player+'</div><div class="today-total">'+r.total+'</div></div><div class="today-rounds" style="margin-left:32px">'+pills+'</div></div>';
+    }).join('')
+    :'<div class="empty">No scores yet</div>';
+}
+
+function computeStats(data){
+  const stats={};
+  data.forEach(r=>{
+    if(!stats[r.player])stats[r.player]={sum:0,count:0,best:0,bestDate:'',bestRounds:[]};
+    stats[r.player].sum+=r.total;
+    stats[r.player].count++;
+    if(r.total>stats[r.player].best){
+      stats[r.player].best=r.total;
+      stats[r.player].bestDate=r.date;
+      stats[r.player].bestRounds=r.rounds;
+    }
+  });
+  return Object.entries(stats).filter(([,s])=>s.count>0);
+}
+
+function renderLeaderboard(){
+  makeToggle('lb-toggle','leaderboard');
+  const data=filterByWindow(ALL,windowState.leaderboard);
+  const pl=computeStats(data);
+  const total=pl.length;
+
+  const byAvg=[...pl].sort((a,b)=>(b[1].sum/b[1].count)-(a[1].sum/a[1].count));
+  document.getElementById('lb-avg').innerHTML=byAvg.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games</div></div><div class="lb-stat">'+(s.sum/s.count).toFixed(1)+'</div></div>'
+  ).join('');
+
+  const byGames=[...pl].sort((a,b)=>b[1].count-a[1].count);
+  document.getElementById('lb-games').innerHTML=byGames.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div></div><div class="lb-stat">'+s.count+'</div></div>'
+  ).join('');
+
+  const byBest=[...pl].sort((a,b)=>b[1].best-a[1].best);
+  document.getElementById('lb-best').innerHTML=byBest.map(([name,s],i)=>{
+    const pills=s.bestRounds.map(r=>pill(r)).join('');
+    return '<div class="lb-best-row"><div class="lb-best-top"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.bestDate+'</div></div><div class="lb-stat">'+s.best+'</div></div><div class="lb-best-rounds">'+pills+'</div></div>';
+  }).join('');
+}
+
+function renderTrends(){
+  makeToggle('trends-toggle','trends');
+  const data=filterByWindow(ALL,windowState.trends);
+  const dates=[...new Set(data.map(r=>r.date))].sort();
+
+  PLAYERS.forEach(p=>{if(!(p in playerVisibility))playerVisibility[p]=true;});
+
+  const datasets=PLAYERS.map((p,i)=>{
+    const byDate={};
+    data.filter(r=>r.player===p).forEach(r=>byDate[r.date]={total:r.total,rounds:r.rounds});
+    return{
+      label:p,
+      data:dates.map(d=>byDate[d]?byDate[d].total:null),
+      rounds:dates.map(d=>byDate[d]?byDate[d].rounds:null),
+      borderColor:COLORS[i%COLORS.length],
+      backgroundColor:COLORS[i%COLORS.length]+'22',
+      tension:0.3,spanGaps:true,pointRadius:3,borderWidth:2,
+      hidden:!playerVisibility[p]
+    };
+  });
+
+  document.getElementById('player-toggles').innerHTML=PLAYERS.map((p,i)=>
+    '<span class="player-toggle '+(playerVisibility[p]?'':'off')+'" onclick="togglePlayer(\''+p.replace(/'/g,"\\'")+'\')"><span class="dot" style="background:'+COLORS[i%COLORS.length]+'"></span>'+p+'</span>'
+  ).join('');
+
+  if(trendsChart)trendsChart.destroy();
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gc=isDark?'#2e2e2b':'#e8e8e4',tc=isDark?'#9c9a92':'#888882';
+
+  trendsChart=new Chart(document.getElementById('trends-chart').getContext('2d'),{
+    type:'line',
+    data:{labels:dates.map(fmtDate),datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            title:function(items){return dates[items[0].dataIndex];},
+            label:function(ctx){
+              const ds=ctx.dataset;
+              const rounds=ds.rounds[ctx.dataIndex];
+              if(!rounds)return ds.label+': —';
+              const date=dates[ctx.dataIndex];
+              const dayRows=data.filter(r=>r.date===date).sort((a,b)=>b.total-a.total);
+              const rank=dayRows.findIndex(r=>r.player===ds.label)+1;
+              return [
+                ds.label+': '+ctx.parsed.y+' ('+rank+'/'+dayRows.length+')',
+                'Rounds: '+rounds.join(' · ')
+              ];
+            }
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{color:tc,maxTicksLimit:8,font:{size:11}},grid:{color:gc}},
+        y:{min:0,max:1000,ticks:{color:tc,font:{size:11}},grid:{color:gc}}
+      }
+    }
+  });
+}
+function togglePlayer(p){
+  playerVisibility[p]=!playerVisibility[p];
+  renderTrends();
+}
+
+function renderRounds(){
+  makeToggle('rounds-toggle','rounds');
+  const data=filterByWindow(ALL,windowState.rounds);
+  document.getElementById('round-tabs').innerHTML=[1,2,3,4,5].map((r,i)=>
+    '<button class="'+(i===currentRound?'active':'')+'" onclick="setRound('+i+')">R'+r+'</button>'
+  ).join('');
+  document.getElementById('round-label').textContent='Round '+(currentRound+1)+' avg';
+  const stats={};
+  data.forEach(r=>{
+    if(!stats[r.player])stats[r.player]={sum:0,count:0};
+    const v=r.rounds[currentRound];if(v!=null){stats[r.player].sum+=v;stats[r.player].count++;}
+  });
+  const ranked=Object.entries(stats).filter(([,s])=>s.count>0).sort((a,b)=>(b[1].sum/b[1].count)-(a[1].sum/a[1].count));
+  const total=ranked.length;
+  document.getElementById('rounds-list').innerHTML=ranked.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games</div></div><div class="lb-stat">'+(s.sum/s.count).toFixed(1)+'</div></div>'
+  ).join('');
+}
+function setRound(i){currentRound=i;renderRounds();}
+
+function renderH2H(){
+  const p1=document.getElementById('h2h-p1').value,p2=document.getElementById('h2h-p2').value;
+  if(!p1||!p2||p1===p2){
+    document.getElementById('h2h-stats').innerHTML='<div class="empty" style="grid-column:1/-1">Select two different players</div>';
+    document.getElementById('h2h-games').innerHTML='';
+    document.getElementById('blowout-card').style.display='none';
+    return;
+  }
+  const shared={};
+  ALL.filter(r=>r.player===p1).forEach(r=>shared[r.date]={p1:r.total,p1r:r.rounds});
+  ALL.filter(r=>r.player===p2).forEach(r=>{if(shared[r.date]){shared[r.date].p2=r.total;shared[r.date].p2r=r.rounds;}});
+  const games=Object.entries(shared).filter(([,v])=>v.p2!=null).sort((a,b)=>a[0]<b[0]?1:-1);
+
+  let w1=0,w2=0,ties=0,sum1=0,sum2=0,biggest=null,biggestDiff=0;
+  games.forEach(([date,v])=>{
+    sum1+=v.p1;sum2+=v.p2;
+    if(v.p1>v.p2)w1++;else if(v.p2>v.p1)w2++;else ties++;
+    const d=Math.abs(v.p1-v.p2);
+    if(d>biggestDiff){biggestDiff=d;biggest={date:date,p1:v.p1,p2:v.p2,p1r:v.p1r,p2r:v.p2r};}
+  });
+
+  const total=games.length,avg1=total?(sum1/total).toFixed(1):'—',avg2=total?(sum2/total).toFixed(1):'—';
+  const p1Winning=w1>w2,p2Winning=w2>w1;
+  const icon1=p1Winning?'🏆':(p2Winning?'🤮':'');
+  const icon2=p2Winning?'🏆':(p1Winning?'🤮':'');
+
+  document.getElementById('h2h-stats').innerHTML=
+    '<div class="h2h-player"><div class="icon">'+icon1+'</div><div class="big">'+w1+'</div><div class="name">'+p1+'</div><div class="avg">avg '+avg1+'</div></div>'+
+    '<div class="h2h-vs">'+(ties?ties+' tie'+(ties>1?'s':''):'vs')+'</div>'+
+    '<div class="h2h-player"><div class="icon">'+icon2+'</div><div class="big">'+w2+'</div><div class="name">'+p2+'</div><div class="avg">avg '+avg2+'</div></div>';
+  document.getElementById('h2h-bar-fill').style.width=(total?Math.round(w1/total*100):50)+'%';
+  document.getElementById('h2h-bar-label').textContent=total?total+' shared game'+(total>1?'s':''):'No shared games';
+
+  if(biggest){
+    let winnerName,winnerScore,winnerRounds,loserName,loserScore,loserRounds;
+    if(biggest.p1>biggest.p2){winnerName=p1;winnerScore=biggest.p1;winnerRounds=biggest.p1r;loserName=p2;loserScore=biggest.p2;loserRounds=biggest.p2r;}
+    else{winnerName=p2;winnerScore=biggest.p2;winnerRounds=biggest.p2r;loserName=p1;loserScore=biggest.p1;loserRounds=biggest.p1r;}
+    document.getElementById('blowout-card').style.display='block';
+    document.getElementById('blowout-content').innerHTML=
+      '<div class="blowout-row"><span style="font-size:18px">🏆</span><div class="blowout-name">'+winnerName+'</div><div class="blowout-score">'+winnerScore+'</div></div>'+
+      '<div class="lb-best-rounds" style="margin-left:30px;margin-bottom:8px">'+winnerRounds.map(pill).join('')+'</div>'+
+      '<div class="blowout-row"><span style="font-size:18px">🤮</span><div class="blowout-name">'+loserName+'</div><div class="blowout-score">'+loserScore+'</div></div>'+
+      '<div class="lb-best-rounds" style="margin-left:30px">'+loserRounds.map(pill).join('')+'</div>'+
+      '<div class="blowout-diff">'+biggest.date+' · '+biggestDiff+' point difference</div>';
+  }else{
+    document.getElementById('blowout-card').style.display='none';
+  }
+
+  document.getElementById('h2h-games').innerHTML=games.length?games.map(([date,v])=>{
+    const diff=v.p1-v.p2,c1=diff>0?'win':diff<0?'loss':'',c2=diff<0?'win':diff>0?'loss':'';
+    return '<div class="h2h-game-row"><div class="h2h-date">'+fmtDate(date)+'</div><div class="h2h-score '+c1+' left">'+v.p1+'</div><div class="h2h-diff">'+(diff>0?'+'+diff:diff===0?'tie':diff)+'</div><div class="h2h-score '+c2+'">'+v.p2+'</div></div>';
+  }).join(''):'<div class="empty">No shared games</div>';
+}
+function initH2H(){
+  const s1=document.getElementById('h2h-p1'),s2=document.getElementById('h2h-p2');
+  [s1,s2].forEach(s=>s.innerHTML=PLAYERS.map(p=>'<option value="'+p+'">'+p+'</option>').join(''));
+  if(PLAYERS.length>=2)s2.value=PLAYERS[1];
+  s1.addEventListener('change',renderH2H);s2.addEventListener('change',renderH2H);
+  renderH2H();
+}
+
+function showView(name){
+  activeView=name;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('nav button').forEach((b,i)=>{
+    b.classList.toggle('active',['leaderboard','today','trends','rounds','h2h'][i]===name);
+  });
+  renderActive();
+}
+function renderActive(){
+  if(activeView==='today')renderToday();
+  else if(activeView==='leaderboard')renderLeaderboard();
+  else if(activeView==='trends')renderTrends();
+  else if(activeView==='rounds')renderRounds();
+  else if(activeView==='h2h')renderH2H();
+}
+
+async function load(){
+  const params=new URLSearchParams(location.search);
+  let dataFile=params.get('data');
+  if(!dataFile){
+    const page=location.pathname.split('/').pop().replace('.html','');
+    dataFile=page!=='index'?'data_'+page+'.json':null;
+  }
+  if(!dataFile){document.getElementById('chat-name').textContent='No data file specified';return;}
+  try{
+    const json=await(await fetch(dataFile)).json();
+    CHAT=json.chat;PLAYERS=json.players;ALL=json.scores;
+    document.getElementById('chat-name').textContent=CHAT;
+    document.getElementById('export-date').textContent='Updated '+json.exported_at;
+    document.title='MapTap — '+CHAT;
+    initH2H();renderLeaderboard();
+  }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,1885 @@
+{
+  "chat": "Kev is fried",
+  "exported_at": "2026-06-19 15:30:10",
+  "players": [
+    "Conor Murphy",
+    "Giovanni Cancanon",
+    "Hunter Sitki",
+    "Justin Kaw",
+    "Kevin Mun"
+  ],
+  "scores": [
+    {
+      "date": "2026-04-01",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        93,
+        95,
+        96,
+        95
+      ],
+      "total": 953
+    },
+    {
+      "date": "2026-04-01",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        97,
+        97,
+        99,
+        98
+      ],
+      "total": 981
+    },
+    {
+      "date": "2026-04-01",
+      "player": "Kevin Mun",
+      "rounds": [
+        91,
+        84,
+        92,
+        95,
+        97
+      ],
+      "total": 935
+    },
+    {
+      "date": "2026-04-03",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        99,
+        83,
+        98,
+        84,
+        57
+      ],
+      "total": 801
+    },
+    {
+      "date": "2026-04-03",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        94,
+        100,
+        94,
+        86
+      ],
+      "total": 931
+    },
+    {
+      "date": "2026-04-03",
+      "player": "Kevin Mun",
+      "rounds": [
+        99,
+        78,
+        74,
+        96,
+        76
+      ],
+      "total": 841
+    },
+    {
+      "date": "2026-04-04",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        92,
+        82,
+        15,
+        50,
+        29
+      ],
+      "total": 441
+    },
+    {
+      "date": "2026-04-04",
+      "player": "Hunter Sitki",
+      "rounds": [
+        94,
+        85,
+        95,
+        77,
+        92
+      ],
+      "total": 876
+    },
+    {
+      "date": "2026-04-05",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        85,
+        89,
+        92,
+        8,
+        76
+      ],
+      "total": 610
+    },
+    {
+      "date": "2026-04-05",
+      "player": "Hunter Sitki",
+      "rounds": [
+        96,
+        97,
+        90,
+        91,
+        70
+      ],
+      "total": 856
+    },
+    {
+      "date": "2026-04-07",
+      "player": "Conor Murphy",
+      "rounds": [
+        95,
+        92,
+        61,
+        83,
+        78
+      ],
+      "total": 792
+    },
+    {
+      "date": "2026-04-07",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        95,
+        12,
+        53,
+        50,
+        19
+      ],
+      "total": 420
+    },
+    {
+      "date": "2026-04-07",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        98,
+        95,
+        92,
+        98
+      ],
+      "total": 955
+    },
+    {
+      "date": "2026-04-07",
+      "player": "Kevin Mun",
+      "rounds": [
+        98,
+        98,
+        59,
+        65,
+        0
+      ],
+      "total": 509
+    },
+    {
+      "date": "2026-04-08",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        83,
+        92,
+        88,
+        92
+      ],
+      "total": 904
+    },
+    {
+      "date": "2026-04-08",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        91,
+        80,
+        93,
+        52,
+        84
+      ],
+      "total": 765
+    },
+    {
+      "date": "2026-04-08",
+      "player": "Hunter Sitki",
+      "rounds": [
+        96,
+        99,
+        95,
+        96,
+        92
+      ],
+      "total": 949
+    },
+    {
+      "date": "2026-04-08",
+      "player": "Kevin Mun",
+      "rounds": [
+        94,
+        89,
+        92,
+        96,
+        96
+      ],
+      "total": 943
+    },
+    {
+      "date": "2026-04-09",
+      "player": "Conor Murphy",
+      "rounds": [
+        89,
+        97,
+        77,
+        47,
+        38
+      ],
+      "total": 595
+    },
+    {
+      "date": "2026-04-09",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        87,
+        76,
+        37,
+        71,
+        9
+      ],
+      "total": 477
+    },
+    {
+      "date": "2026-04-09",
+      "player": "Hunter Sitki",
+      "rounds": [
+        96,
+        92,
+        87,
+        73,
+        99
+      ],
+      "total": 878
+    },
+    {
+      "date": "2026-04-09",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        75,
+        25,
+        79,
+        19
+      ],
+      "total": 516
+    },
+    {
+      "date": "2026-04-10",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        90,
+        97,
+        64,
+        97,
+        4
+      ],
+      "total": 618
+    },
+    {
+      "date": "2026-04-10",
+      "player": "Hunter Sitki",
+      "rounds": [
+        96,
+        98,
+        98,
+        98,
+        97
+      ],
+      "total": 975
+    },
+    {
+      "date": "2026-04-10",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        94,
+        84,
+        95,
+        98
+      ],
+      "total": 938
+    },
+    {
+      "date": "2026-04-11",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        98,
+        100,
+        80,
+        98
+      ],
+      "total": 932
+    },
+    {
+      "date": "2026-04-12",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        97,
+        100,
+        94,
+        49,
+        69
+      ],
+      "total": 739
+    },
+    {
+      "date": "2026-04-12",
+      "player": "Hunter Sitki",
+      "rounds": [
+        98,
+        100,
+        100,
+        81,
+        83
+      ],
+      "total": 890
+    },
+    {
+      "date": "2026-04-12",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        99,
+        78,
+        39,
+        92
+      ],
+      "total": 745
+    },
+    {
+      "date": "2026-04-13",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        57,
+        94,
+        80,
+        83,
+        74
+      ],
+      "total": 782
+    },
+    {
+      "date": "2026-04-13",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        98,
+        89,
+        87,
+        92
+      ],
+      "total": 910
+    },
+    {
+      "date": "2026-04-13",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        92,
+        86,
+        82,
+        70
+      ],
+      "total": 817
+    },
+    {
+      "date": "2026-04-14",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        96,
+        63,
+        79,
+        83,
+        73
+      ],
+      "total": 785
+    },
+    {
+      "date": "2026-04-14",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        95,
+        92,
+        94,
+        99
+      ],
+      "total": 958
+    },
+    {
+      "date": "2026-04-15",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        100,
+        93,
+        84,
+        39,
+        89
+      ],
+      "total": 745
+    },
+    {
+      "date": "2026-04-15",
+      "player": "Hunter Sitki",
+      "rounds": [
+        98,
+        97,
+        70,
+        93,
+        73
+      ],
+      "total": 833
+    },
+    {
+      "date": "2026-04-15",
+      "player": "Kevin Mun",
+      "rounds": [
+        90,
+        90,
+        86,
+        53,
+        91
+      ],
+      "total": 784
+    },
+    {
+      "date": "2026-04-16",
+      "player": "Conor Murphy",
+      "rounds": [
+        100,
+        85,
+        98,
+        64,
+        73
+      ],
+      "total": 792
+    },
+    {
+      "date": "2026-04-16",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        93,
+        92,
+        58,
+        47,
+        63
+      ],
+      "total": 631
+    },
+    {
+      "date": "2026-04-16",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        98,
+        96,
+        60,
+        81
+      ],
+      "total": 810
+    },
+    {
+      "date": "2026-04-16",
+      "player": "Kevin Mun",
+      "rounds": [
+        91,
+        84,
+        94,
+        69,
+        77
+      ],
+      "total": 801
+    },
+    {
+      "date": "2026-04-17",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        81,
+        13,
+        67,
+        20,
+        65
+      ],
+      "total": 483
+    },
+    {
+      "date": "2026-04-17",
+      "player": "Hunter Sitki",
+      "rounds": [
+        98,
+        99,
+        87,
+        99,
+        98
+      ],
+      "total": 962
+    },
+    {
+      "date": "2026-04-17",
+      "player": "Kevin Mun",
+      "rounds": [
+        96,
+        92,
+        87,
+        57,
+        72
+      ],
+      "total": 749
+    },
+    {
+      "date": "2026-04-18",
+      "player": "Hunter Sitki",
+      "rounds": [
+        95,
+        97,
+        85,
+        86,
+        99
+      ],
+      "total": 917
+    },
+    {
+      "date": "2026-04-18",
+      "player": "Kevin Mun",
+      "rounds": [
+        92,
+        89,
+        74,
+        81,
+        90
+      ],
+      "total": 842
+    },
+    {
+      "date": "2026-04-19",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        98,
+        99,
+        50,
+        59,
+        84
+      ],
+      "total": 726
+    },
+    {
+      "date": "2026-04-19",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        99,
+        87,
+        96,
+        92
+      ],
+      "total": 936
+    },
+    {
+      "date": "2026-04-19",
+      "player": "Kevin Mun",
+      "rounds": [
+        96,
+        96,
+        96,
+        96,
+        78
+      ],
+      "total": 906
+    },
+    {
+      "date": "2026-04-20",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        93,
+        85,
+        90,
+        53,
+        89
+      ],
+      "total": 784
+    },
+    {
+      "date": "2026-04-20",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        97,
+        97,
+        96,
+        80
+      ],
+      "total": 918
+    },
+    {
+      "date": "2026-04-20",
+      "player": "Kevin Mun",
+      "rounds": [
+        99,
+        99,
+        92,
+        98,
+        88
+      ],
+      "total": 940
+    },
+    {
+      "date": "2026-04-21",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        99,
+        62,
+        70,
+        81
+      ],
+      "total": 773
+    },
+    {
+      "date": "2026-04-21",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        88,
+        45,
+        65,
+        8,
+        34
+      ],
+      "total": 389
+    },
+    {
+      "date": "2026-04-21",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        99,
+        100,
+        65,
+        97
+      ],
+      "total": 885
+    },
+    {
+      "date": "2026-04-21",
+      "player": "Kevin Mun",
+      "rounds": [
+        94,
+        81,
+        67,
+        72,
+        30
+      ],
+      "total": 615
+    },
+    {
+      "date": "2026-04-22",
+      "player": "Conor Murphy",
+      "rounds": [
+        87,
+        16,
+        74,
+        69,
+        74
+      ],
+      "total": 680
+    },
+    {
+      "date": "2026-04-22",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        84,
+        38,
+        5,
+        60,
+        75
+      ],
+      "total": 537
+    },
+    {
+      "date": "2026-04-22",
+      "player": "Hunter Sitki",
+      "rounds": [
+        84,
+        100,
+        74,
+        93,
+        76
+      ],
+      "total": 839
+    },
+    {
+      "date": "2026-04-22",
+      "player": "Kevin Mun",
+      "rounds": [
+        82,
+        92,
+        17,
+        71,
+        73
+      ],
+      "total": 640
+    },
+    {
+      "date": "2026-04-23",
+      "player": "Conor Murphy",
+      "rounds": [
+        83,
+        92,
+        89,
+        93,
+        93
+      ],
+      "total": 911
+    },
+    {
+      "date": "2026-04-23",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        86,
+        95,
+        80,
+        51,
+        55
+      ],
+      "total": 659
+    },
+    {
+      "date": "2026-04-23",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        92,
+        97,
+        91,
+        94
+      ],
+      "total": 941
+    },
+    {
+      "date": "2026-04-23",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        96,
+        95,
+        92,
+        92
+      ],
+      "total": 935
+    },
+    {
+      "date": "2026-04-24",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        97,
+        53,
+        92,
+        91,
+        74
+      ],
+      "total": 829
+    },
+    {
+      "date": "2026-04-24",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        98,
+        94,
+        92,
+        74
+      ],
+      "total": 884
+    },
+    {
+      "date": "2026-04-24",
+      "player": "Kevin Mun",
+      "rounds": [
+        98,
+        93,
+        86,
+        91,
+        64
+      ],
+      "total": 828
+    },
+    {
+      "date": "2026-04-25",
+      "player": "Conor Murphy",
+      "rounds": [
+        96,
+        96,
+        97,
+        77,
+        55
+      ],
+      "total": 782
+    },
+    {
+      "date": "2026-04-25",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        82,
+        56,
+        8,
+        80,
+        77
+      ],
+      "total": 625
+    },
+    {
+      "date": "2026-04-25",
+      "player": "Hunter Sitki",
+      "rounds": [
+        98,
+        100,
+        99,
+        82,
+        55
+      ],
+      "total": 807
+    },
+    {
+      "date": "2026-04-25",
+      "player": "Kevin Mun",
+      "rounds": [
+        96,
+        92,
+        62,
+        70,
+        52
+      ],
+      "total": 678
+    },
+    {
+      "date": "2026-04-26",
+      "player": "Conor Murphy",
+      "rounds": [
+        94,
+        82,
+        82,
+        86,
+        95
+      ],
+      "total": 883
+    },
+    {
+      "date": "2026-04-26",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        87,
+        67,
+        93,
+        81,
+        30
+      ],
+      "total": 673
+    },
+    {
+      "date": "2026-04-26",
+      "player": "Hunter Sitki",
+      "rounds": [
+        94,
+        91,
+        95,
+        89,
+        83
+      ],
+      "total": 891
+    },
+    {
+      "date": "2026-04-26",
+      "player": "Kevin Mun",
+      "rounds": [
+        98,
+        92,
+        53,
+        88,
+        73
+      ],
+      "total": 779
+    },
+    {
+      "date": "2026-04-27",
+      "player": "Conor Murphy",
+      "rounds": [
+        98,
+        97,
+        78,
+        74,
+        44
+      ],
+      "total": 705
+    },
+    {
+      "date": "2026-04-27",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        88,
+        66,
+        59,
+        14,
+        52
+      ],
+      "total": 470
+    },
+    {
+      "date": "2026-04-27",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        91,
+        78,
+        79,
+        92
+      ],
+      "total": 860
+    },
+    {
+      "date": "2026-04-27",
+      "player": "Kevin Mun",
+      "rounds": [
+        92,
+        97,
+        82,
+        66,
+        57
+      ],
+      "total": 722
+    },
+    {
+      "date": "2026-04-28",
+      "player": "Conor Murphy",
+      "rounds": [
+        95,
+        90,
+        90,
+        58,
+        38
+      ],
+      "total": 653
+    },
+    {
+      "date": "2026-04-28",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        89,
+        70,
+        44,
+        75,
+        11
+      ],
+      "total": 505
+    },
+    {
+      "date": "2026-04-28",
+      "player": "Hunter Sitki",
+      "rounds": [
+        92,
+        98,
+        90,
+        90,
+        59
+      ],
+      "total": 817
+    },
+    {
+      "date": "2026-04-28",
+      "player": "Kevin Mun",
+      "rounds": [
+        92,
+        99,
+        64,
+        92,
+        50
+      ],
+      "total": 745
+    },
+    {
+      "date": "2026-04-29",
+      "player": "Conor Murphy",
+      "rounds": [
+        93,
+        93,
+        95,
+        98,
+        86
+      ],
+      "total": 928
+    },
+    {
+      "date": "2026-04-29",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        84,
+        88,
+        76,
+        57,
+        81
+      ],
+      "total": 738
+    },
+    {
+      "date": "2026-04-29",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        99,
+        98,
+        93,
+        88
+      ],
+      "total": 937
+    },
+    {
+      "date": "2026-04-30",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        97,
+        88,
+        89,
+        74,
+        94
+      ],
+      "total": 867
+    },
+    {
+      "date": "2026-04-30",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        97,
+        99,
+        99,
+        100
+      ],
+      "total": 991
+    },
+    {
+      "date": "2026-05-01",
+      "player": "Conor Murphy",
+      "rounds": [
+        93,
+        99,
+        91,
+        90,
+        75
+      ],
+      "total": 869
+    },
+    {
+      "date": "2026-05-01",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        79,
+        97,
+        7,
+        60,
+        63
+      ],
+      "total": 559
+    },
+    {
+      "date": "2026-05-01",
+      "player": "Hunter Sitki",
+      "rounds": [
+        94,
+        98,
+        91,
+        87,
+        50
+      ],
+      "total": 785
+    },
+    {
+      "date": "2026-05-01",
+      "player": "Kevin Mun",
+      "rounds": [
+        91,
+        96,
+        88,
+        93,
+        89
+      ],
+      "total": 909
+    },
+    {
+      "date": "2026-05-02",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        95,
+        95,
+        71,
+        92,
+        63
+      ],
+      "total": 797
+    },
+    {
+      "date": "2026-05-02",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        99,
+        97,
+        93,
+        83
+      ],
+      "total": 918
+    },
+    {
+      "date": "2026-05-02",
+      "player": "Kevin Mun",
+      "rounds": [
+        96,
+        97,
+        86,
+        98,
+        51
+      ],
+      "total": 812
+    },
+    {
+      "date": "2026-05-03",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        97,
+        97,
+        100,
+        95
+      ],
+      "total": 975
+    },
+    {
+      "date": "2026-05-04",
+      "player": "Conor Murphy",
+      "rounds": [
+        99,
+        96,
+        82,
+        82,
+        52
+      ],
+      "total": 761
+    },
+    {
+      "date": "2026-05-04",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        98,
+        80,
+        74,
+        41,
+        65
+      ],
+      "total": 644
+    },
+    {
+      "date": "2026-05-04",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        97,
+        95,
+        95,
+        95
+      ],
+      "total": 957
+    },
+    {
+      "date": "2026-05-04",
+      "player": "Kevin Mun",
+      "rounds": [
+        99,
+        95,
+        95,
+        94,
+        86
+      ],
+      "total": 924
+    },
+    {
+      "date": "2026-05-05",
+      "player": "Conor Murphy",
+      "rounds": [
+        91,
+        100,
+        93,
+        75,
+        91
+      ],
+      "total": 875
+    },
+    {
+      "date": "2026-05-05",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        81,
+        99,
+        89,
+        71,
+        60
+      ],
+      "total": 751
+    },
+    {
+      "date": "2026-05-05",
+      "player": "Hunter Sitki",
+      "rounds": [
+        94,
+        99,
+        77,
+        74,
+        81
+      ],
+      "total": 812
+    },
+    {
+      "date": "2026-05-06",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        94,
+        75,
+        87,
+        5,
+        67
+      ],
+      "total": 559
+    },
+    {
+      "date": "2026-05-06",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        98,
+        97,
+        100,
+        88
+      ],
+      "total": 956
+    },
+    {
+      "date": "2026-05-07",
+      "player": "Conor Murphy",
+      "rounds": [
+        98,
+        100,
+        82,
+        80,
+        24
+      ],
+      "total": 674
+    },
+    {
+      "date": "2026-05-07",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        99,
+        82,
+        56,
+        57,
+        54
+      ],
+      "total": 626
+    },
+    {
+      "date": "2026-05-07",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        100,
+        96,
+        87,
+        96
+      ],
+      "total": 938
+    },
+    {
+      "date": "2026-05-07",
+      "player": "Kevin Mun",
+      "rounds": [
+        88,
+        97,
+        77,
+        86,
+        74
+      ],
+      "total": 819
+    },
+    {
+      "date": "2026-05-10",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        85,
+        98,
+        100,
+        83
+      ],
+      "total": 927
+    },
+    {
+      "date": "2026-05-10",
+      "player": "Kevin Mun",
+      "rounds": [
+        94,
+        91,
+        88,
+        76,
+        95
+      ],
+      "total": 874
+    },
+    {
+      "date": "2026-05-11",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        95,
+        98,
+        23,
+        91
+      ],
+      "total": 730
+    },
+    {
+      "date": "2026-05-11",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        98,
+        83,
+        91,
+        10,
+        76
+      ],
+      "total": 621
+    },
+    {
+      "date": "2026-05-11",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        95,
+        98,
+        95,
+        87
+      ],
+      "total": 934
+    },
+    {
+      "date": "2026-05-11",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        95,
+        96,
+        51,
+        89
+      ],
+      "total": 804
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        99,
+        95,
+        87,
+        90
+      ],
+      "total": 919
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Justin Kaw",
+      "rounds": [
+        99,
+        99,
+        95,
+        87,
+        90
+      ],
+      "total": 919
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Kevin Mun",
+      "rounds": [
+        97,
+        95,
+        95,
+        98,
+        94
+      ],
+      "total": 958
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Conor Murphy",
+      "rounds": [
+        93,
+        93,
+        83,
+        90,
+        84
+      ],
+      "total": 874
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        83,
+        85,
+        90,
+        79,
+        36
+      ],
+      "total": 693
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Hunter Sitki",
+      "rounds": [
+        94,
+        95,
+        100,
+        95,
+        95
+      ],
+      "total": 959
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Justin Kaw",
+      "rounds": [
+        96,
+        94,
+        93,
+        93,
+        89
+      ],
+      "total": 922
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Kevin Mun",
+      "rounds": [
+        95,
+        95,
+        92,
+        95,
+        78
+      ],
+      "total": 893
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        95,
+        84,
+        44,
+        81,
+        89
+      ],
+      "total": 777
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Hunter Sitki",
+      "rounds": [
+        95,
+        99,
+        98,
+        95,
+        76
+      ],
+      "total": 903
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Justin Kaw",
+      "rounds": [
+        95,
+        94,
+        83,
+        100,
+        98
+      ],
+      "total": 949
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Kevin Mun",
+      "rounds": [
+        94,
+        92,
+        95,
+        85,
+        91
+      ],
+      "total": 904
+    },
+    {
+      "date": "2026-05-21",
+      "player": "Conor Murphy",
+      "rounds": [
+        96,
+        95,
+        90,
+        69,
+        76
+      ],
+      "total": 806
+    },
+    {
+      "date": "2026-05-21",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        21,
+        95,
+        68,
+        69,
+        46
+      ],
+      "total": 597
+    },
+    {
+      "date": "2026-05-21",
+      "player": "Hunter Sitki",
+      "rounds": [
+        95,
+        95,
+        92,
+        92,
+        95
+      ],
+      "total": 935
+    },
+    {
+      "date": "2026-05-21",
+      "player": "Justin Kaw",
+      "rounds": [
+        95,
+        95,
+        67,
+        81,
+        90
+      ],
+      "total": 837
+    },
+    {
+      "date": "2026-05-21",
+      "player": "Kevin Mun",
+      "rounds": [
+        95,
+        95,
+        90,
+        50,
+        97
+      ],
+      "total": 811
+    },
+    {
+      "date": "2026-05-22",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        91,
+        95,
+        47,
+        83,
+        18
+      ],
+      "total": 583
+    },
+    {
+      "date": "2026-05-22",
+      "player": "Hunter Sitki",
+      "rounds": [
+        97,
+        98,
+        100,
+        93,
+        28
+      ],
+      "total": 758
+    },
+    {
+      "date": "2026-05-22",
+      "player": "Justin Kaw",
+      "rounds": [
+        95,
+        99,
+        84,
+        99,
+        36
+      ],
+      "total": 767
+    },
+    {
+      "date": "2026-05-22",
+      "player": "Kevin Mun",
+      "rounds": [
+        95,
+        98,
+        97,
+        90,
+        54
+      ],
+      "total": 819
+    },
+    {
+      "date": "2026-05-23",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        99,
+        96,
+        99,
+        84
+      ],
+      "total": 940
+    },
+    {
+      "date": "2026-05-26",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        92,
+        90,
+        89,
+        86
+      ],
+      "total": 894
+    },
+    {
+      "date": "2026-05-26",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        92,
+        55,
+        74,
+        11,
+        90
+      ],
+      "total": 598
+    },
+    {
+      "date": "2026-05-26",
+      "player": "Hunter Sitki",
+      "rounds": [
+        99,
+        95,
+        91,
+        97,
+        88
+      ],
+      "total": 931
+    },
+    {
+      "date": "2026-05-26",
+      "player": "Justin Kaw",
+      "rounds": [
+        96,
+        96,
+        79,
+        87,
+        85
+      ],
+      "total": 866
+    },
+    {
+      "date": "2026-05-26",
+      "player": "Kevin Mun",
+      "rounds": [
+        95,
+        72,
+        95,
+        11,
+        81
+      ],
+      "total": 633
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        99,
+        99,
+        97,
+        67
+      ],
+      "total": 886
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        97,
+        97,
+        97,
+        95
+      ],
+      "total": 967
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Kevin Mun",
+      "rounds": [
+        99,
+        98,
+        95,
+        72,
+        70
+      ],
+      "total": 813
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Conor Murphy",
+      "rounds": [
+        99,
+        95,
+        85,
+        97,
+        88
+      ],
+      "total": 919
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        75,
+        94,
+        95,
+        28,
+        90
+      ],
+      "total": 713
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        96,
+        97,
+        95,
+        95
+      ],
+      "total": 960
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Justin Kaw",
+      "rounds": [
+        98,
+        95,
+        92,
+        87,
+        87
+      ],
+      "total": 899
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Kevin Mun",
+      "rounds": [
+        100,
+        97,
+        96,
+        94,
+        95
+      ],
+      "total": 956
+    },
+    {
+      "date": "2026-06-18",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        98,
+        96,
+        91,
+        81
+      ],
+      "total": 906
+    },
+    {
+      "date": "2026-06-18",
+      "player": "Kevin Mun",
+      "rounds": [
+        93,
+        98,
+        94,
+        94,
+        77
+      ],
+      "total": 892
+    },
+    {
+      "date": "2026-06-19",
+      "player": "Conor Murphy",
+      "rounds": [
+        95,
+        95,
+        95,
+        87,
+        95
+      ],
+      "total": 926
+    },
+    {
+      "date": "2026-06-19",
+      "player": "Giovanni Cancanon",
+      "rounds": [
+        95,
+        82,
+        89,
+        93,
+        86
+      ],
+      "total": 892
+    },
+    {
+      "date": "2026-06-19",
+      "player": "Hunter Sitki",
+      "rounds": [
+        100,
+        95,
+        95,
+        95,
+        94
+      ],
+      "total": 952
+    },
+    {
+      "date": "2026-06-19",
+      "player": "Justin Kaw",
+      "rounds": [
+        87,
+        99,
+        97,
+        93,
+        73
+      ],
+      "total": 878
+    }
+  ]
+}

@@ -1,0 +1,408 @@
+{
+  "chat": "Game Boys",
+  "exported_at": "2026-06-19 15:30:10",
+  "players": [
+    "Caleb Parnell",
+    "Conor Murphy",
+    "Justin Carroll",
+    "Michael Ackley"
+  ],
+  "scores": [
+    {
+      "date": "2026-05-11",
+      "player": "Caleb Parnell",
+      "rounds": [
+        95,
+        97,
+        95,
+        34,
+        86
+      ],
+      "total": 742
+    },
+    {
+      "date": "2026-05-11",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        95,
+        98,
+        23,
+        91
+      ],
+      "total": 730
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Caleb Parnell",
+      "rounds": [
+        99,
+        100,
+        95,
+        94,
+        74
+      ],
+      "total": 893
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Conor Murphy",
+      "rounds": [
+        100,
+        95,
+        91,
+        98,
+        89
+      ],
+      "total": 938
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Justin Carroll",
+      "rounds": [
+        100,
+        78,
+        93,
+        96,
+        78
+      ],
+      "total": 886
+    },
+    {
+      "date": "2026-05-17",
+      "player": "Michael Ackley",
+      "rounds": [
+        97,
+        95,
+        68,
+        96,
+        95
+      ],
+      "total": 901
+    },
+    {
+      "date": "2026-05-18",
+      "player": "Caleb Parnell",
+      "rounds": [
+        94,
+        95,
+        96,
+        85,
+        90
+      ],
+      "total": 906
+    },
+    {
+      "date": "2026-05-18",
+      "player": "Conor Murphy",
+      "rounds": [
+        93,
+        95,
+        98,
+        10,
+        81
+      ],
+      "total": 657
+    },
+    {
+      "date": "2026-05-18",
+      "player": "Justin Carroll",
+      "rounds": [
+        94,
+        97,
+        98,
+        87,
+        94
+      ],
+      "total": 930
+    },
+    {
+      "date": "2026-05-18",
+      "player": "Michael Ackley",
+      "rounds": [
+        91,
+        98,
+        95,
+        93,
+        78
+      ],
+      "total": 892
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Caleb Parnell",
+      "rounds": [
+        95,
+        93,
+        99,
+        94,
+        83
+      ],
+      "total": 917
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Conor Murphy",
+      "rounds": [
+        93,
+        93,
+        83,
+        90,
+        84
+      ],
+      "total": 874
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Justin Carroll",
+      "rounds": [
+        92,
+        93,
+        79,
+        60,
+        90
+      ],
+      "total": 793
+    },
+    {
+      "date": "2026-05-19",
+      "player": "Michael Ackley",
+      "rounds": [
+        95,
+        84,
+        83,
+        79,
+        67
+      ],
+      "total": 783
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Caleb Parnell",
+      "rounds": [
+        98,
+        95,
+        99,
+        89,
+        70
+      ],
+      "total": 868
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Conor Murphy",
+      "rounds": [
+        98,
+        92,
+        63,
+        95,
+        75
+      ],
+      "total": 826
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Justin Carroll",
+      "rounds": [
+        96,
+        89,
+        89,
+        76,
+        71
+      ],
+      "total": 804
+    },
+    {
+      "date": "2026-05-20",
+      "player": "Michael Ackley",
+      "rounds": [
+        95,
+        94,
+        44,
+        3,
+        71
+      ],
+      "total": 499
+    },
+    {
+      "date": "2026-05-23",
+      "player": "Caleb Parnell",
+      "rounds": [
+        99,
+        95,
+        95,
+        98,
+        85
+      ],
+      "total": 933
+    },
+    {
+      "date": "2026-05-23",
+      "player": "Justin Carroll",
+      "rounds": [
+        99,
+        99,
+        93,
+        56,
+        87
+      ],
+      "total": 813
+    },
+    {
+      "date": "2026-05-24",
+      "player": "Caleb Parnell",
+      "rounds": [
+        98,
+        95,
+        95,
+        95,
+        79
+      ],
+      "total": 905
+    },
+    {
+      "date": "2026-05-24",
+      "player": "Conor Murphy",
+      "rounds": [
+        96,
+        95,
+        97,
+        95,
+        95
+      ],
+      "total": 955
+    },
+    {
+      "date": "2026-05-24",
+      "player": "Justin Carroll",
+      "rounds": [
+        96,
+        95,
+        97,
+        97,
+        95
+      ],
+      "total": 961
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Caleb Parnell",
+      "rounds": [
+        98,
+        95,
+        96,
+        77,
+        62
+      ],
+      "total": 802
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Conor Murphy",
+      "rounds": [
+        97,
+        99,
+        99,
+        97,
+        67
+      ],
+      "total": 886
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Justin Carroll",
+      "rounds": [
+        97,
+        90,
+        95,
+        84,
+        74
+      ],
+      "total": 851
+    },
+    {
+      "date": "2026-06-16",
+      "player": "Michael Ackley",
+      "rounds": [
+        96,
+        92,
+        95,
+        96,
+        56
+      ],
+      "total": 834
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Caleb Parnell",
+      "rounds": [
+        97,
+        95,
+        99,
+        97,
+        91
+      ],
+      "total": 954
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Conor Murphy",
+      "rounds": [
+        99,
+        95,
+        85,
+        97,
+        88
+      ],
+      "total": 919
+    },
+    {
+      "date": "2026-06-17",
+      "player": "Michael Ackley",
+      "rounds": [
+        97,
+        95,
+        95,
+        96,
+        92
+      ],
+      "total": 946
+    },
+    {
+      "date": "2026-06-18",
+      "player": "Caleb Parnell",
+      "rounds": [
+        100,
+        95,
+        97,
+        63,
+        68
+      ],
+      "total": 782
+    },
+    {
+      "date": "2026-06-18",
+      "player": "Conor Murphy",
+      "rounds": [
+        100,
+        100,
+        96,
+        87,
+        74
+      ],
+      "total": 875
+    },
+    {
+      "date": "2026-06-18",
+      "player": "Justin Carroll",
+      "rounds": [
+        99,
+        98,
+        92,
+        49,
+        72
+      ],
+      "total": 744
+    }
+  ]
+}
