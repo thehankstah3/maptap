@@ -468,7 +468,7 @@ async function load(){
     document.getElementById('chat-name').textContent=CHAT;
     document.getElementById('export-date').textContent='Updated '+json.exported_at;
     document.title='MapTap — '+CHAT;
-    initH2H();renderLeaderboard();
+    initH2H();renderActive();
   }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
 }
 load();
