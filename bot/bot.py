@@ -1,8 +1,20 @@
+import json
+import os
+
 import discord
 
 import config
 import db
 from parser import parse_maptap_message
+
+DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
+
+# JSON object mapping Discord channel ID -> chat name, e.g.:
+# {"123456789012345678": "maptap", "234567890123456789": "hcm"}
+CHANNEL_CHAT_MAP = {
+    int(channel_id): chat
+    for channel_id, chat in json.loads(os.environ["CHANNEL_CHAT_MAP"]).items()
+}
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -13,14 +25,14 @@ conn = db.connect(config.DATABASE_URL)
 
 @client.event
 async def on_ready():
-    print(f"Logged in as {client.user}. Watching channels: {list(config.CHANNEL_CHAT_MAP.values())}")
+    print(f"Logged in as {client.user}. Watching channels: {list(CHANNEL_CHAT_MAP.values())}")
 
 
 @client.event
 async def on_message(message):
     if message.author.bot:
         return
-    chat = config.CHANNEL_CHAT_MAP.get(message.channel.id)
+    chat = CHANNEL_CHAT_MAP.get(message.channel.id)
     if chat is None:
         return
 
@@ -43,4 +55,4 @@ async def on_message(message):
         print(f"[{chat}] {player} {parsed['date']}: {parsed['rounds']} -> {parsed['total']}")
 
 
-client.run(config.DISCORD_TOKEN)
+client.run(DISCORD_TOKEN)
