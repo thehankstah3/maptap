@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "MapTap Score Logger",
+  "version": "1.0.0",
+  "description": "Detects copied MapTap scores on maptap.gg and submits them to your MapTap Analytics dashboard.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://superb-nurturing-production-f3fc.up.railway.app/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.maptap.gg/*"],
+      "js": ["inject.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*.maptap.gg/*"],
+      "js": ["parser.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "MapTap Score Logger",
+    "default_popup": "options.html"
+  }
+}

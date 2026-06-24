@@ -2,11 +2,13 @@ import json
 import os
 from datetime import datetime
 
-from flask import Flask, jsonify, abort, g
+from flask import Flask, jsonify, abort, g, request
 from flask_cors import CORS
 
 import db
 from config import DATABASE_URL
+
+API_KEY = os.environ["API_KEY"]
 
 app = Flask(__name__)
 CORS(app)
@@ -51,6 +53,29 @@ def get_scores(chat):
     ]
     exported_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return jsonify({"chat": chat, "exported_at": exported_at, "players": players, "scores": scores})
+
+
+@app.post("/api/scores")
+def post_score():
+    if request.headers.get("X-API-Key") != API_KEY:
+        abort(401)
+
+    data = request.get_json(silent=True) or {}
+    required = {"chat", "player", "date", "rounds", "total"}
+    if not required.issubset(data):
+        abort(400, "Missing required fields: " + ", ".join(sorted(required - data.keys())))
+
+    message_id = f"ext:{data['chat']}:{data['date']}:{data['player']}"
+    inserted = db.insert_score(
+        get_conn(),
+        message_id=message_id,
+        chat=data["chat"],
+        player=data["player"],
+        date_str=data["date"],
+        rounds=data["rounds"],
+        total=data["total"],
+    )
+    return jsonify({"inserted": inserted}), 201
 
 
 if __name__ == "__main__":
