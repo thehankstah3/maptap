@@ -49,38 +49,60 @@ function mmssToSeconds(mm, ss) {
   return parseInt(mm, 10) * 60 + parseInt(ss, 10);
 }
 
-const WEND_RE = /Wend\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🌀[\s\S]*?With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+backtracks/i;
-const ZIP_RE = /Zip\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🏁[\s\S]*?With\s+(no|\d+)\s+backtracks/i;
-const PATCHES_RE = /Patches\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🧶[\s\S]*?With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+redraws/i;
-const TANGO_RE = /Tango\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*with\s+(no|\d+)\s+hints/i;
-const QUEENS_RE = /Queens\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*with\s+(no|\d+)\s+hints/i;
+const WEND_RE = /Wend\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🌀/i;
+const WEND_DETAIL_RE = /With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+backtracks/i;
+const ZIP_RE = /Zip\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🏁/i;
+const ZIP_DETAIL_RE = /With\s+(no|\d+)\s+backtracks/i;
+const PATCHES_RE = /Patches\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🧶/i;
+const PATCHES_DETAIL_RE = /With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+redraws/i;
+const TANGO_RE = /Tango\s+#(\d+)\s*\|\s*(\d+):(\d+)/i;
+const QUEENS_RE = /Queens\s+#(\d+)\s*\|\s*(\d+):(\d+)/i;
+const HINTS_RE = /with\s+(no|\d+)\s+hints/i;
 
+// The hints/backtracks/redraws detail line is sometimes omitted by
+// LinkedIn's share text, so each is matched separately and merged in
+// only when present, rather than required by the main pattern.
 function parseWendScore(content) {
   const m = content && content.match(WEND_RE);
   if (!m) return null;
-  return { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]), hints: noOrNum(m[4]), backtracks: noOrNum(m[5]) };
+  const result = { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]) };
+  const d = content.match(WEND_DETAIL_RE);
+  if (d) { result.hints = noOrNum(d[1]); result.backtracks = noOrNum(d[2]); }
+  return result;
 }
 
 function parseZipScore(content) {
   const m = content && content.match(ZIP_RE);
   if (!m) return null;
-  return { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]), backtracks: noOrNum(m[4]) };
+  const result = { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]) };
+  const d = content.match(ZIP_DETAIL_RE);
+  if (d) result.backtracks = noOrNum(d[1]);
+  return result;
 }
 
 function parsePatchesScore(content) {
   const m = content && content.match(PATCHES_RE);
   if (!m) return null;
-  return { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]), hints: noOrNum(m[4]), redraws: noOrNum(m[5]) };
+  const result = { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]) };
+  const d = content.match(PATCHES_DETAIL_RE);
+  if (d) { result.hints = noOrNum(d[1]); result.redraws = noOrNum(d[2]); }
+  return result;
 }
 
 function parseTangoScore(content) {
   const m = content && content.match(TANGO_RE);
   if (!m) return null;
-  return { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]), hints: noOrNum(m[4]) };
+  const result = { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]) };
+  const h = content.match(HINTS_RE);
+  if (h) result.hints = noOrNum(h[1]);
+  return result;
 }
 
 function parseQueensScore(content) {
   const m = content && content.match(QUEENS_RE);
   if (!m) return null;
-  return { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]), hints: noOrNum(m[4]) };
+  const result = { puzzle: parseInt(m[1], 10), score: mmssToSeconds(m[2], m[3]) };
+  const h = content.match(HINTS_RE);
+  if (h) result.hints = noOrNum(h[1]);
+  return result;
 }

@@ -79,72 +79,83 @@ def _mmss_to_seconds(mm, ss):
     return int(mm) * 60 + int(ss)
 
 
-WEND_RE = re.compile(
-    r"Wend\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🌀.*?With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+backtracks",
-    re.IGNORECASE | re.DOTALL,
-)
-ZIP_RE = re.compile(
-    r"Zip\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🏁.*?With\s+(no|\d+)\s+backtracks",
-    re.IGNORECASE | re.DOTALL,
-)
-PATCHES_RE = re.compile(
-    r"Patches\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🧶.*?With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+redraws",
-    re.IGNORECASE | re.DOTALL,
-)
-TANGO_RE = re.compile(r"Tango\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*with\s+(no|\d+)\s+hints", re.IGNORECASE)
-QUEENS_RE = re.compile(r"Queens\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*with\s+(no|\d+)\s+hints", re.IGNORECASE)
+WEND_RE = re.compile(r"Wend\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🌀", re.IGNORECASE)
+WEND_DETAIL_RE = re.compile(r"With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+backtracks", re.IGNORECASE)
+ZIP_RE = re.compile(r"Zip\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🏁", re.IGNORECASE)
+ZIP_DETAIL_RE = re.compile(r"With\s+(no|\d+)\s+backtracks", re.IGNORECASE)
+PATCHES_RE = re.compile(r"Patches\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🧶", re.IGNORECASE)
+PATCHES_DETAIL_RE = re.compile(r"With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+redraws", re.IGNORECASE)
+TANGO_RE = re.compile(r"Tango\s+#(\d+)\s*\|\s*(\d+):(\d+)", re.IGNORECASE)
+QUEENS_RE = re.compile(r"Queens\s+#(\d+)\s*\|\s*(\d+):(\d+)", re.IGNORECASE)
+HINTS_RE = re.compile(r"with\s+(no|\d+)\s+hints", re.IGNORECASE)
 
 
 def parse_wend_message(content):
-    """Wend #16 | 1:01 🌀\nWith no hints & 3 backtracks\nlnkd.in/wend."""
+    """Wend #16 | 1:01 🌀\n[With no hints & 3 backtracks\n]lnkd.in/wend.
+
+    The hints/backtracks line is sometimes omitted by LinkedIn's share text,
+    so it's optional — only included in the result when present.
+    """
     match = WEND_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss, hints, backtracks = match.groups()
-    return {
-        "puzzle": int(puzzle),
-        "score": _mmss_to_seconds(mm, ss),
-        "hints": _no_or_num(hints),
-        "backtracks": _no_or_num(backtracks),
-    }
+    puzzle, mm, ss = match.groups()
+    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    detail = WEND_DETAIL_RE.search(content)
+    if detail:
+        result["hints"] = _no_or_num(detail.group(1))
+        result["backtracks"] = _no_or_num(detail.group(2))
+    return result
 
 
 def parse_zip_message(content):
-    """Zip #464 | 2:28 🏁\nWith 17 backtracks 🛑\nlnkd.in/zip."""
+    """Zip #464 | 2:28 🏁\n[With 17 backtracks 🛑\n]lnkd.in/zip."""
     match = ZIP_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss, backtracks = match.groups()
-    return {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss), "backtracks": _no_or_num(backtracks)}
+    puzzle, mm, ss = match.groups()
+    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    detail = ZIP_DETAIL_RE.search(content)
+    if detail:
+        result["backtracks"] = _no_or_num(detail.group(1))
+    return result
 
 
 def parse_patches_message(content):
-    """Patches #99 | 0:46 🧶\nWith no hints & 8 redraws\nlnkd.in/patches."""
+    """Patches #99 | 0:46 🧶\n[With no hints & 8 redraws\n]lnkd.in/patches."""
     match = PATCHES_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss, hints, redraws = match.groups()
-    return {
-        "puzzle": int(puzzle),
-        "score": _mmss_to_seconds(mm, ss),
-        "hints": _no_or_num(hints),
-        "redraws": _no_or_num(redraws),
-    }
+    puzzle, mm, ss = match.groups()
+    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    detail = PATCHES_DETAIL_RE.search(content)
+    if detail:
+        result["hints"] = _no_or_num(detail.group(1))
+        result["redraws"] = _no_or_num(detail.group(2))
+    return result
 
 
 def parse_tango_message(content):
-    """Tango #625 | 1:15 with no hints\nFirst 5 placements:\n...\nlnkd.in/tango."""
+    """Tango #625 | 1:15 [with no hints]\nFirst 5 placements:\n...\nlnkd.in/tango."""
     match = TANGO_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss, hints = match.groups()
-    return {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss), "hints": _no_or_num(hints)}
+    puzzle, mm, ss = match.groups()
+    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    hints = HINTS_RE.search(content)
+    if hints:
+        result["hints"] = _no_or_num(hints.group(1))
+    return result
 
 
 def parse_queens_message(content):
-    """Queens #785 | 0:32 with no hints\nFirst 👑s: 🟦 🟥 🟨\nlnkd.in/queens."""
+    """Queens #785 | 0:32 [with no hints]\nFirst 👑s: 🟦 🟥 🟨\nlnkd.in/queens."""
     match = QUEENS_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss, hints = match.groups()
-    return {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss), "hints": _no_or_num(hints)}
+    puzzle, mm, ss = match.groups()
+    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    hints = HINTS_RE.search(content)
+    if hints:
+        result["hints"] = _no_or_num(hints.group(1))
+    return result
