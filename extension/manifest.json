@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MapTap Score Logger",
   "version": "1.0.0",
-  "description": "Detects copied MapTap and Wordle results and submits them to your MapTap Analytics dashboard.",
+  "description": "Detects copied MapTap, Wordle, Wend, Zip, Patches, Tango, and Queens results and submits them to your MapTap Analytics dashboard.",
   "permissions": ["storage"],
   "host_permissions": ["https://superb-nurturing-production-f3fc.up.railway.app/*"],
   "background": {
@@ -10,13 +10,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://maptap.gg/*", "https://*.maptap.gg/*", "https://www.nytimes.com/games/wordle/*"],
+      "matches": ["https://maptap.gg/*", "https://*.maptap.gg/*", "https://www.nytimes.com/games/wordle/*", "https://www.linkedin.com/games/*"],
       "js": ["inject.js"],
       "world": "MAIN",
       "run_at": "document_start"
     },
     {
-      "matches": ["https://maptap.gg/*", "https://*.maptap.gg/*", "https://www.nytimes.com/games/wordle/*"],
+      "matches": ["https://maptap.gg/*", "https://*.maptap.gg/*", "https://www.nytimes.com/games/wordle/*", "https://www.linkedin.com/games/*"],
       "js": ["parser.js", "content.js"],
       "run_at": "document_idle"
     }

@@ -5,7 +5,24 @@ import discord
 
 import config
 import db
-from parser import parse_maptap_message, parse_wordle_message
+from parser import (
+    parse_maptap_message,
+    parse_wordle_message,
+    parse_wend_message,
+    parse_zip_message,
+    parse_patches_message,
+    parse_tango_message,
+    parse_queens_message,
+)
+
+# Games with a uniform parser signature: fn(content) -> {"score": int, ...} or None
+SIMPLE_GAMES = [
+    ("wend", parse_wend_message),
+    ("zip", parse_zip_message),
+    ("patches", parse_patches_message),
+    ("tango", parse_tango_message),
+    ("queens", parse_queens_message),
+]
 
 DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
 
@@ -71,6 +88,27 @@ async def on_message(message):
         if inserted:
             await message.add_reaction("✅")
             print(f"[{chat}] wordle {player} {date_str}: {wordle['attempts']}/6")
+        return
+
+    for game, parse_fn in SIMPLE_GAMES:
+        parsed = parse_fn(message.content)
+        if parsed is None:
+            continue
+        date_str = message.created_at.date().isoformat()
+        inserted = db.insert_result(
+            conn,
+            message_id=message.id,
+            game=game,
+            chat=chat,
+            player=player,
+            date_str=date_str,
+            data=parsed,
+            score=parsed["score"],
+        )
+        if inserted:
+            await message.add_reaction("✅")
+            print(f"[{chat}] {game} {player} {date_str}: {parsed['score']}s")
+        return
 
 
 client.run(DISCORD_TOKEN)

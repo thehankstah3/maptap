@@ -1,3 +1,11 @@
+const SIMPLE_GAME_PARSERS = [
+  ["wend", parseWendScore],
+  ["zip", parseZipScore],
+  ["patches", parsePatchesScore],
+  ["tango", parseTangoScore],
+  ["queens", parseQueensScore],
+];
+
 function handleText(text) {
   const maptap = parseMaptapScore(text);
   if (maptap) {
@@ -20,6 +28,21 @@ function handleText(text) {
       data: wordle,
       score: wordle.attempts,
     });
+    return;
+  }
+
+  for (const [game, parseFn] of SIMPLE_GAME_PARSERS) {
+    const parsed = parseFn(text);
+    if (parsed) {
+      chrome.runtime.sendMessage({
+        type: "RESULT_DETECTED",
+        game,
+        date: new Date().toISOString().slice(0, 10),
+        data: parsed,
+        score: parsed.score,
+      });
+      return;
+    }
   }
 }
 

@@ -69,3 +69,82 @@ def parse_wordle_message(content):
         return None
 
     return {"attempts": attempts, "grid": grid}
+
+
+def _no_or_num(s):
+    return 0 if s.lower() == "no" else int(s)
+
+
+def _mmss_to_seconds(mm, ss):
+    return int(mm) * 60 + int(ss)
+
+
+WEND_RE = re.compile(
+    r"Wend\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🌀.*?With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+backtracks",
+    re.IGNORECASE | re.DOTALL,
+)
+ZIP_RE = re.compile(
+    r"Zip\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🏁.*?With\s+(no|\d+)\s+backtracks",
+    re.IGNORECASE | re.DOTALL,
+)
+PATCHES_RE = re.compile(
+    r"Patches\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🧶.*?With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+redraws",
+    re.IGNORECASE | re.DOTALL,
+)
+TANGO_RE = re.compile(r"Tango\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*with\s+(no|\d+)\s+hints", re.IGNORECASE)
+QUEENS_RE = re.compile(r"Queens\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*with\s+(no|\d+)\s+hints", re.IGNORECASE)
+
+
+def parse_wend_message(content):
+    """Wend #16 | 1:01 🌀\nWith no hints & 3 backtracks\nlnkd.in/wend."""
+    match = WEND_RE.search(content)
+    if not match:
+        return None
+    puzzle, mm, ss, hints, backtracks = match.groups()
+    return {
+        "puzzle": int(puzzle),
+        "score": _mmss_to_seconds(mm, ss),
+        "hints": _no_or_num(hints),
+        "backtracks": _no_or_num(backtracks),
+    }
+
+
+def parse_zip_message(content):
+    """Zip #464 | 2:28 🏁\nWith 17 backtracks 🛑\nlnkd.in/zip."""
+    match = ZIP_RE.search(content)
+    if not match:
+        return None
+    puzzle, mm, ss, backtracks = match.groups()
+    return {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss), "backtracks": _no_or_num(backtracks)}
+
+
+def parse_patches_message(content):
+    """Patches #99 | 0:46 🧶\nWith no hints & 8 redraws\nlnkd.in/patches."""
+    match = PATCHES_RE.search(content)
+    if not match:
+        return None
+    puzzle, mm, ss, hints, redraws = match.groups()
+    return {
+        "puzzle": int(puzzle),
+        "score": _mmss_to_seconds(mm, ss),
+        "hints": _no_or_num(hints),
+        "redraws": _no_or_num(redraws),
+    }
+
+
+def parse_tango_message(content):
+    """Tango #625 | 1:15 with no hints\nFirst 5 placements:\n...\nlnkd.in/tango."""
+    match = TANGO_RE.search(content)
+    if not match:
+        return None
+    puzzle, mm, ss, hints = match.groups()
+    return {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss), "hints": _no_or_num(hints)}
+
+
+def parse_queens_message(content):
+    """Queens #785 | 0:32 with no hints\nFirst 👑s: 🟦 🟥 🟨\nlnkd.in/queens."""
+    match = QUEENS_RE.search(content)
+    if not match:
+        return None
+    puzzle, mm, ss, hints = match.groups()
+    return {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss), "hints": _no_or_num(hints)}

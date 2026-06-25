@@ -192,9 +192,9 @@
   </div>
 </main>
 
-<main id="wordle-main" style="display:none;">
-  <div class="card"><div class="card-label">Avg attempts (lower is better)</div><div id="wordle-leaderboard"></div></div>
-  <div class="card"><div class="card-label">Recent results</div><div id="wordle-recent"></div></div>
+<main id="other-main" style="display:none;">
+  <div class="card"><div class="card-label" id="other-stat-label">Avg score</div><div id="other-leaderboard"></div></div>
+  <div class="card"><div class="card-label">Recent results</div><div id="other-recent"></div></div>
 </main>
 
 <script>
@@ -474,7 +474,17 @@ function renderActive(){
 
 let GAMES=[];
 let activeGame='maptap';
-const GAME_LABELS={maptap:'MapTap',wordle:'Wordle'};
+function fmtTime(s){if(s==null)return '-';s=Math.round(s);const m=Math.floor(s/60),sec=s%60;return m+':'+String(sec).padStart(2,'0');}
+const GAME_CONFIG={
+  maptap:{label:'MapTap'},
+  wordle:{label:'Wordle',statLabel:'Avg attempts (lower is better)',fmt:s=>(s===7?'X':s)+'/6'},
+  wend:{label:'Wend',statLabel:'Avg time (lower is better)',fmt:fmtTime},
+  zip:{label:'Zip',statLabel:'Avg time (lower is better)',fmt:fmtTime},
+  patches:{label:'Patches',statLabel:'Avg time (lower is better)',fmt:fmtTime},
+  tango:{label:'Tango',statLabel:'Avg time (lower is better)',fmt:fmtTime},
+  queens:{label:'Queens',statLabel:'Avg time (lower is better)',fmt:fmtTime},
+};
+const GAME_LABELS=Object.fromEntries(Object.entries(GAME_CONFIG).map(([k,v])=>[k,v.label]));
 
 function renderChatTabs(){
   document.getElementById('chat-tabs').innerHTML=CHATS.map(c=>
@@ -516,7 +526,7 @@ async function selectGame(game){
   renderGameTabs();
   document.getElementById('maptap-main').style.display=game==='maptap'?'':'none';
   document.getElementById('maptap-nav').style.display=game==='maptap'?'':'none';
-  document.getElementById('wordle-main').style.display=game==='wordle'?'':'none';
+  document.getElementById('other-main').style.display=game==='maptap'?'none':'';
 
   if(game==='maptap'){
     try{
@@ -534,12 +544,13 @@ async function selectGame(game){
       document.getElementById('chat-name').textContent=json.chat;
       document.getElementById('export-date').textContent='Updated '+json.exported_at;
       document.title='MapTap — '+json.chat;
-      renderWordle(json);
+      renderOtherGame(json,GAME_CONFIG[game]||{statLabel:'Avg score',fmt:s=>s});
     }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
   }
 }
 
-function renderWordle(json){
+function renderOtherGame(json,cfg){
+  document.getElementById('other-stat-label').textContent=cfg.statLabel||'Avg score';
   const stats={};
   json.results.forEach(r=>{
     if(!stats[r.player])stats[r.player]={sum:0,count:0,best:Infinity};
@@ -548,13 +559,13 @@ function renderWordle(json){
     if(r.score<stats[r.player].best)stats[r.player].best=r.score;
   });
   const ranked=Object.entries(stats).sort((a,b)=>(a[1].sum/a[1].count)-(b[1].sum/b[1].count));
-  document.getElementById('wordle-leaderboard').innerHTML=ranked.length?ranked.map(([name,s],i)=>
-    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,ranked.length)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games &middot; best '+(s.best===7?'X':s.best)+'/6</div></div><div class="lb-stat">'+(s.sum/s.count).toFixed(2)+'</div></div>'
+  document.getElementById('other-leaderboard').innerHTML=ranked.length?ranked.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,ranked.length)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games &middot; best '+cfg.fmt(s.best)+'</div></div><div class="lb-stat">'+cfg.fmt(s.sum/s.count)+'</div></div>'
   ).join(''):'<div class="empty">No results yet</div>';
 
   const recent=[...json.results].sort((a,b)=>b.date<a.date?1:-1).slice(0,15);
-  document.getElementById('wordle-recent').innerHTML=recent.length?recent.map(r=>
-    '<div class="lb-row"><div class="lb-main"><div class="lb-name">'+r.player+'</div><div class="lb-sub">'+r.date+'</div></div><div class="lb-stat">'+(r.score===7?'X':r.score)+'/6</div></div>'
+  document.getElementById('other-recent').innerHTML=recent.length?recent.map(r=>
+    '<div class="lb-row"><div class="lb-main"><div class="lb-name">'+r.player+'</div><div class="lb-sub">'+r.date+'</div></div><div class="lb-stat">'+cfg.fmt(r.score)+'</div></div>'
   ).join(''):'<div class="empty">No results yet</div>';
 }
 
