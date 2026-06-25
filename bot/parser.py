@@ -39,3 +39,33 @@ def parse_maptap_message(content, year):
         "rounds": rounds,
         "total": int(total_match.group(1)),
     }
+
+
+WORDLE_RE = re.compile(r"Wordle\s+[\d,]+\s+(X|[1-6])/6", re.IGNORECASE)
+GRID_LINE_RE = re.compile(r"^[⬛⬜\U0001F7E8\U0001F7E9]{5}$")
+
+
+def parse_wordle_message(content):
+    """Parse a Wordle share message, e.g.:
+        Wordle 1,234 4/6
+
+        ⬜⬜🟨⬜⬜
+        ⬜⬜🟩⬜⬜
+        ⬜🟩🟩⬜⬜
+        🟩🟩🟩🟩🟩
+
+    A failed game (X/6) scores as 7 attempts so "fewer is better" sorting
+    still ranks it worst. Returns None if the message doesn't match.
+    """
+    match = WORDLE_RE.search(content)
+    if not match:
+        return None
+
+    attempts_raw = match.group(1).upper()
+    attempts = 7 if attempts_raw == "X" else int(attempts_raw)
+
+    grid = [line.strip() for line in content.splitlines() if GRID_LINE_RE.match(line.strip())]
+    if not grid:
+        return None
+
+    return {"attempts": attempts, "grid": grid}

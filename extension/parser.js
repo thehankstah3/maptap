@@ -20,3 +20,23 @@ function parseMaptapScore(content) {
     total: parseInt(totalMatch[1], 10),
   };
 }
+
+const WORDLE_RE = /Wordle\s+[\d,]+\s+(X|[1-6])\/6/i;
+const GRID_LINE_RE = /^[⬛⬜🟨🟩]{5}$/u;
+
+function parseWordleScore(content) {
+  if (!content) return null;
+  const match = content.match(WORDLE_RE);
+  if (!match) return null;
+
+  const attemptsRaw = match[1].toUpperCase();
+  const attempts = attemptsRaw === "X" ? 7 : parseInt(attemptsRaw, 10);
+
+  const grid = content
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => GRID_LINE_RE.test(line));
+  if (grid.length === 0) return null;
+
+  return { attempts, grid };
+}

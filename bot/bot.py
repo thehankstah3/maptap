@@ -5,7 +5,7 @@ import discord
 
 import config
 import db
-from parser import parse_maptap_message
+from parser import parse_maptap_message, parse_wordle_message
 
 DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
 
@@ -36,23 +36,41 @@ async def on_message(message):
     if chat is None:
         return
 
-    parsed = parse_maptap_message(message.content, year=message.created_at.year)
-    if parsed is None:
+    player = message.author.display_name
+
+    maptap = parse_maptap_message(message.content, year=message.created_at.year)
+    if maptap is not None:
+        inserted = db.insert_result(
+            conn,
+            message_id=message.id,
+            game="maptap",
+            chat=chat,
+            player=player,
+            date_str=maptap["date"],
+            data={"rounds": maptap["rounds"]},
+            score=maptap["total"],
+        )
+        if inserted:
+            await message.add_reaction("✅")
+            print(f"[{chat}] maptap {player} {maptap['date']}: {maptap['rounds']} -> {maptap['total']}")
         return
 
-    player = message.author.display_name
-    inserted = db.insert_score(
-        conn,
-        message_id=message.id,
-        chat=chat,
-        player=player,
-        date_str=parsed["date"],
-        rounds=parsed["rounds"],
-        total=parsed["total"],
-    )
-    if inserted:
-        await message.add_reaction("✅")
-        print(f"[{chat}] {player} {parsed['date']}: {parsed['rounds']} -> {parsed['total']}")
+    wordle = parse_wordle_message(message.content)
+    if wordle is not None:
+        date_str = message.created_at.date().isoformat()
+        inserted = db.insert_result(
+            conn,
+            message_id=message.id,
+            game="wordle",
+            chat=chat,
+            player=player,
+            date_str=date_str,
+            data=wordle,
+            score=wordle["attempts"],
+        )
+        if inserted:
+            await message.add_reaction("✅")
+            print(f"[{chat}] wordle {player} {date_str}: {wordle['attempts']}/6")
 
 
 client.run(DISCORD_TOKEN)

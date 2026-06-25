@@ -137,8 +137,9 @@
 </header>
 
 <div class="chat-tabs" id="chat-tabs"></div>
+<div class="chat-tabs" id="game-tabs"></div>
 
-<nav>
+<nav id="maptap-nav">
   <button class="active" onclick="showView('leaderboard')">Leaderboard</button>
   <button onclick="showView('today')">Today</button>
   <button onclick="showView('trends')">Trends</button>
@@ -146,7 +147,7 @@
   <button onclick="showView('h2h')">Head to head</button>
 </nav>
 
-<main>
+<main id="maptap-main">
   <div class="view" id="view-today">
     <div class="card"><div class="card-label" id="today-label">Today</div><div id="today-list"></div></div>
   </div>
@@ -189,6 +190,11 @@
       <div id="blowout-content"></div>
     </div>
   </div>
+</main>
+
+<main id="wordle-main" style="display:none;">
+  <div class="card"><div class="card-label">Avg attempts (lower is better)</div><div id="wordle-leaderboard"></div></div>
+  <div class="card"><div class="card-label">Recent results</div><div id="wordle-recent"></div></div>
 </main>
 
 <script>
@@ -466,9 +472,21 @@ function renderActive(){
   else if(activeView==='h2h')renderH2H();
 }
 
+let GAMES=[];
+let activeGame='maptap';
+const GAME_LABELS={maptap:'MapTap',wordle:'Wordle'};
+
 function renderChatTabs(){
   document.getElementById('chat-tabs').innerHTML=CHATS.map(c=>
     '<button class="'+(c.slug===activeChat?'active':'')+'" onclick="selectChat(\''+c.slug+'\')">'+c.label+'</button>'
+  ).join('');
+}
+
+function renderGameTabs(){
+  const el=document.getElementById('game-tabs');
+  if(GAMES.length<2){el.innerHTML='';return;}
+  el.innerHTML=GAMES.map(g=>
+    '<button class="'+(g===activeGame?'active':'')+'" onclick="selectGame(\''+g+'\')">'+(GAME_LABELS[g]||g)+'</button>'
   ).join('');
 }
 
@@ -486,14 +504,58 @@ async function selectChat(slug){
   url.searchParams.set('chat',slug);
   history.replaceState(null,'',url);
   try{
-    const json=await fetchChat(slug);
-    CHAT=json.chat;PLAYERS=json.players;ALL=json.scores;
-    playerVisibility={};
-    document.getElementById('chat-name').textContent=CHAT;
-    document.getElementById('export-date').textContent='Updated '+json.exported_at;
-    document.title='MapTap — '+CHAT;
-    initH2H();renderActive();
-  }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
+    GAMES=await(await fetch(API_BASE+'/api/games/'+encodeURIComponent(slug))).json();
+  }catch(e){GAMES=['maptap'];}
+  activeGame=GAMES.includes('maptap')?'maptap':GAMES[0];
+  renderGameTabs();
+  await selectGame(activeGame);
+}
+
+async function selectGame(game){
+  activeGame=game;
+  renderGameTabs();
+  document.getElementById('maptap-main').style.display=game==='maptap'?'':'none';
+  document.getElementById('maptap-nav').style.display=game==='maptap'?'':'none';
+  document.getElementById('wordle-main').style.display=game==='wordle'?'':'none';
+
+  if(game==='maptap'){
+    try{
+      const json=await fetchChat(activeChat);
+      CHAT=json.chat;PLAYERS=json.players;ALL=json.scores;
+      playerVisibility={};
+      document.getElementById('chat-name').textContent=CHAT;
+      document.getElementById('export-date').textContent='Updated '+json.exported_at;
+      document.title='MapTap — '+CHAT;
+      initH2H();renderActive();
+    }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
+  } else {
+    try{
+      const json=await(await fetch(API_BASE+'/api/results/'+encodeURIComponent(activeChat)+'/'+encodeURIComponent(game))).json();
+      document.getElementById('chat-name').textContent=json.chat;
+      document.getElementById('export-date').textContent='Updated '+json.exported_at;
+      document.title='MapTap — '+json.chat;
+      renderWordle(json);
+    }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
+  }
+}
+
+function renderWordle(json){
+  const stats={};
+  json.results.forEach(r=>{
+    if(!stats[r.player])stats[r.player]={sum:0,count:0,best:Infinity};
+    stats[r.player].sum+=r.score;
+    stats[r.player].count++;
+    if(r.score<stats[r.player].best)stats[r.player].best=r.score;
+  });
+  const ranked=Object.entries(stats).sort((a,b)=>(a[1].sum/a[1].count)-(b[1].sum/b[1].count));
+  document.getElementById('wordle-leaderboard').innerHTML=ranked.length?ranked.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,ranked.length)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games &middot; best '+(s.best===7?'X':s.best)+'/6</div></div><div class="lb-stat">'+(s.sum/s.count).toFixed(2)+'</div></div>'
+  ).join(''):'<div class="empty">No results yet</div>';
+
+  const recent=[...json.results].sort((a,b)=>b.date<a.date?1:-1).slice(0,15);
+  document.getElementById('wordle-recent').innerHTML=recent.length?recent.map(r=>
+    '<div class="lb-row"><div class="lb-main"><div class="lb-name">'+r.player+'</div><div class="lb-sub">'+r.date+'</div></div><div class="lb-stat">'+(r.score===7?'X':r.score)+'/6</div></div>'
+  ).join(''):'<div class="empty">No results yet</div>';
 }
 
 async function load(){

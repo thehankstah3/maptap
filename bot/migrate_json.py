@@ -13,15 +13,16 @@ def migrate(json_path):
     conn = db.connect(DATABASE_URL)
     inserted = 0
     for row in data["scores"]:
-        message_id = f"json-import:{chat}:{row['date']}:{row['player']}"
-        if db.insert_score(
+        message_id = f"json-import:maptap:{chat}:{row['date']}:{row['player']}"
+        if db.insert_result(
             conn,
             message_id=message_id,
+            game="maptap",
             chat=chat,
             player=row["player"],
             date_str=row["date"],
-            rounds=row["rounds"],
-            total=row["total"],
+            data={"rounds": row["rounds"]},
+            score=row["total"],
         ):
             inserted += 1
     print(f"Inserted {inserted} of {len(data['scores'])} rows from {json_path} (chat={chat})")

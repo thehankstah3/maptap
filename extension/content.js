@@ -1,7 +1,25 @@
 function handleText(text) {
-  const parsed = parseMaptapScore(text);
-  if (parsed) {
-    chrome.runtime.sendMessage({ type: "SCORE_DETECTED", payload: parsed });
+  const maptap = parseMaptapScore(text);
+  if (maptap) {
+    chrome.runtime.sendMessage({
+      type: "RESULT_DETECTED",
+      game: "maptap",
+      date: maptap.date,
+      data: { rounds: maptap.rounds },
+      score: maptap.total,
+    });
+    return;
+  }
+
+  const wordle = parseWordleScore(text);
+  if (wordle) {
+    chrome.runtime.sendMessage({
+      type: "RESULT_DETECTED",
+      game: "wordle",
+      date: new Date().toISOString().slice(0, 10),
+      data: wordle,
+      score: wordle.attempts,
+    });
   }
 }
 

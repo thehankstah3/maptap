@@ -1,7 +1,7 @@
 const DEFAULT_API_BASE = "https://superb-nurturing-production-f3fc.up.railway.app";
 
 chrome.runtime.onMessage.addListener((message) => {
-  if (message.type !== "SCORE_DETECTED") return;
+  if (message.type !== "RESULT_DETECTED") return;
 
   chrome.storage.sync.get(["playerName", "chatName", "apiKey", "apiBase"], (cfg) => {
     if (!cfg.playerName || !cfg.chatName || !cfg.apiKey) {
@@ -9,10 +9,17 @@ chrome.runtime.onMessage.addListener((message) => {
       return;
     }
 
-    fetch(`${cfg.apiBase || DEFAULT_API_BASE}/api/scores`, {
+    fetch(`${cfg.apiBase || DEFAULT_API_BASE}/api/results`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-API-Key": cfg.apiKey },
-      body: JSON.stringify({ chat: cfg.chatName, player: cfg.playerName, ...message.payload }),
+      body: JSON.stringify({
+        game: message.game,
+        chat: cfg.chatName,
+        player: cfg.playerName,
+        date: message.date,
+        data: message.data,
+        score: message.score,
+      }),
     })
       .then((res) => {
         const ok = res.ok;
