@@ -192,9 +192,50 @@
   </div>
 </main>
 
+<nav id="other-nav" style="display:none;">
+  <button class="active" onclick="showOtherView('leaderboard')">Leaderboard</button>
+  <button onclick="showOtherView('today')">Today</button>
+  <button onclick="showOtherView('trends')">Trends</button>
+  <button onclick="showOtherView('h2h')">Head to head</button>
+</nav>
+
 <main id="other-main" style="display:none;">
-  <div class="card"><div class="card-label" id="other-stat-label">Avg score</div><div id="other-leaderboard"></div></div>
-  <div class="card"><div class="card-label">Recent results</div><div id="other-recent"></div></div>
+  <div class="view" id="other-view-today">
+    <div class="card"><div class="card-label" id="other-today-label">Today</div><div id="other-today-list"></div></div>
+  </div>
+
+  <div class="view active" id="other-view-leaderboard">
+    <div class="time-toggle" id="other-lb-toggle"></div>
+    <div class="card"><div class="card-label" id="other-lb-avg-label">Avg score</div><div id="other-lb-avg"></div></div>
+    <div class="card"><div class="card-label">Most games played</div><div id="other-lb-games"></div></div>
+    <div class="card"><div class="card-label" id="other-lb-best-label">Best single game</div><div id="other-lb-best"></div></div>
+  </div>
+
+  <div class="view" id="other-view-trends">
+    <div class="time-toggle" id="other-trends-toggle"></div>
+    <div class="card">
+      <div class="card-label">Score over time</div>
+      <div class="chart-wrap"><canvas id="other-trends-chart"></canvas></div>
+      <div class="player-toggles" id="other-player-toggles"></div>
+    </div>
+  </div>
+
+  <div class="view" id="other-view-h2h">
+    <div class="card">
+      <div class="h2h-selectors"><select id="other-h2h-p1"></select><select id="other-h2h-p2"></select></div>
+      <div class="h2h-stats" id="other-h2h-stats"></div>
+      <div class="h2h-bar"><div class="h2h-bar-fill" id="other-h2h-bar-fill"></div></div>
+      <div class="h2h-label" id="other-h2h-bar-label"></div>
+    </div>
+    <div class="card">
+      <div class="h2h-games-label">All shared games</div>
+      <div id="other-h2h-games"></div>
+    </div>
+    <div class="card blowout-card" id="other-blowout-card" style="display:none;">
+      <div class="blowout-label">💥 Biggest blowout</div>
+      <div id="other-blowout-content"></div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -477,14 +518,19 @@ let activeGame='maptap';
 function fmtTime(s){if(s==null)return '-';s=Math.round(s);const m=Math.floor(s/60),sec=s%60;return m+':'+String(sec).padStart(2,'0');}
 const GAME_CONFIG={
   maptap:{label:'MapTap'},
-  wordle:{label:'Wordle',statLabel:'Avg attempts (lower is better)',fmt:s=>(s===7?'X':s)+'/6'},
-  wend:{label:'Wend',statLabel:'Avg time (lower is better)',fmt:fmtTime},
-  zip:{label:'Zip',statLabel:'Avg time (lower is better)',fmt:fmtTime},
-  patches:{label:'Patches',statLabel:'Avg time (lower is better)',fmt:fmtTime},
-  tango:{label:'Tango',statLabel:'Avg time (lower is better)',fmt:fmtTime},
-  queens:{label:'Queens',statLabel:'Avg time (lower is better)',fmt:fmtTime},
+  wordle:{label:'Wordle',lowerIsBetter:true,statLabel:'Avg attempts',bestLabel:'Best single game',fmt:s=>(s===7?'X':s)+'/6'},
+  wend:{label:'Wend',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
+  zip:{label:'Zip',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
+  patches:{label:'Patches',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
+  tango:{label:'Tango',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
+  queens:{label:'Queens',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
 };
 const GAME_LABELS=Object.fromEntries(Object.entries(GAME_CONFIG).map(([k,v])=>[k,v.label]));
+const DEFAULT_OTHER_CFG={lowerIsBetter:true,statLabel:'Avg score',bestLabel:'Best single game',fmt:s=>s};
+
+let OTHER_ALL=[],OTHER_PLAYERS=[],otherCfg=DEFAULT_OTHER_CFG;
+let otherActiveView='leaderboard',otherChart=null,otherPlayerVisibility={};
+let otherWindowState={leaderboard:2,trends:1};
 
 function renderChatTabs(){
   document.getElementById('chat-tabs').innerHTML=CHATS.map(c=>
@@ -527,6 +573,7 @@ async function selectGame(game){
   document.getElementById('maptap-main').style.display=game==='maptap'?'':'none';
   document.getElementById('maptap-nav').style.display=game==='maptap'?'':'none';
   document.getElementById('other-main').style.display=game==='maptap'?'none':'';
+  document.getElementById('other-nav').style.display=game==='maptap'?'none':'';
 
   if(game==='maptap'){
     try{
@@ -541,32 +588,220 @@ async function selectGame(game){
   } else {
     try{
       const json=await(await fetch(API_BASE+'/api/results/'+encodeURIComponent(activeChat)+'/'+encodeURIComponent(game))).json();
+      otherCfg=GAME_CONFIG[game]||DEFAULT_OTHER_CFG;
+      OTHER_PLAYERS=json.players;
+      OTHER_ALL=json.results;
+      otherPlayerVisibility={};
       document.getElementById('chat-name').textContent=json.chat;
       document.getElementById('export-date').textContent='Updated '+json.exported_at;
       document.title='MapTap — '+json.chat;
-      renderOtherGame(json,GAME_CONFIG[game]||{statLabel:'Avg score',fmt:s=>s});
+      initOtherH2H();renderOtherActive();
     }catch(e){document.getElementById('chat-name').textContent='Could not load data';console.error(e);}
   }
 }
 
-function renderOtherGame(json,cfg){
-  document.getElementById('other-stat-label').textContent=cfg.statLabel||'Avg score';
+function otherMakeToggle(id,key){
+  document.getElementById(id).innerHTML=WINDOWS.map((w,i)=>
+    '<button class="'+(i===otherWindowState[key]?'active':'')+'" onclick="otherSetWindow(\''+key+'\','+i+')">'+w.label+'</button>'
+  ).join('');
+}
+function otherSetWindow(key,idx){
+  otherWindowState[key]=idx;
+  document.querySelectorAll('#other-'+key+'-toggle button').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  renderOtherActive();
+}
+
+function otherComputeStats(data){
   const stats={};
-  json.results.forEach(r=>{
-    if(!stats[r.player])stats[r.player]={sum:0,count:0,best:Infinity};
+  data.forEach(r=>{
+    if(!stats[r.player])stats[r.player]={sum:0,count:0,best:null,bestDate:''};
     stats[r.player].sum+=r.score;
     stats[r.player].count++;
-    if(r.score<stats[r.player].best)stats[r.player].best=r.score;
+    const better=stats[r.player].best===null||(otherCfg.lowerIsBetter?r.score<stats[r.player].best:r.score>stats[r.player].best);
+    if(better){stats[r.player].best=r.score;stats[r.player].bestDate=r.date;}
   });
-  const ranked=Object.entries(stats).sort((a,b)=>(a[1].sum/a[1].count)-(b[1].sum/b[1].count));
-  document.getElementById('other-leaderboard').innerHTML=ranked.length?ranked.map(([name,s],i)=>
-    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,ranked.length)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games &middot; best '+cfg.fmt(s.best)+'</div></div><div class="lb-stat">'+cfg.fmt(s.sum/s.count)+'</div></div>'
-  ).join(''):'<div class="empty">No results yet</div>';
+  return Object.entries(stats).filter(([,s])=>s.count>0);
+}
 
-  const recent=[...json.results].sort((a,b)=>b.date<a.date?1:-1).slice(0,15);
-  document.getElementById('other-recent').innerHTML=recent.length?recent.map(r=>
-    '<div class="lb-row"><div class="lb-main"><div class="lb-name">'+r.player+'</div><div class="lb-sub">'+r.date+'</div></div><div class="lb-stat">'+cfg.fmt(r.score)+'</div></div>'
-  ).join(''):'<div class="empty">No results yet</div>';
+function renderOtherToday(){
+  const today=new Date().toISOString().slice(0,10);
+  let rows=OTHER_ALL.filter(r=>r.date===today);
+  const label=document.getElementById('other-today-label');
+  if(!rows.length){
+    const dates=[...new Set(OTHER_ALL.map(r=>r.date))].sort();
+    const last=dates[dates.length-1];
+    rows=OTHER_ALL.filter(r=>r.date===last);
+    label.textContent=last?'Most recent — '+last:'Today';
+  } else { label.textContent=today; }
+  rows=rows.sort((a,b)=>otherCfg.lowerIsBetter?a.score-b.score:b.score-a.score);
+  const total=rows.length;
+  document.getElementById('other-today-list').innerHTML=rows.length
+    ?rows.map((r,i)=>
+      '<div class="today-row"><div class="today-top"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="today-name">'+r.player+'</div><div class="today-total">'+otherCfg.fmt(r.score)+'</div></div></div>'
+    ).join('')
+    :'<div class="empty">No scores yet</div>';
+}
+
+function renderOtherLeaderboard(){
+  otherMakeToggle('other-lb-toggle','leaderboard');
+  const data=filterByWindow(OTHER_ALL,otherWindowState.leaderboard);
+  const pl=otherComputeStats(data);
+  const total=pl.length;
+  document.getElementById('other-lb-avg-label').textContent=otherCfg.statLabel||'Avg score';
+  document.getElementById('other-lb-best-label').textContent=otherCfg.bestLabel||'Best single game';
+
+  const byAvg=[...pl].sort((a,b)=>otherCfg.lowerIsBetter?(a[1].sum/a[1].count)-(b[1].sum/b[1].count):(b[1].sum/b[1].count)-(a[1].sum/a[1].count));
+  document.getElementById('other-lb-avg').innerHTML=byAvg.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.count+' games</div></div><div class="lb-stat">'+otherCfg.fmt(s.sum/s.count)+'</div></div>'
+  ).join('');
+
+  const byGames=[...pl].sort((a,b)=>b[1].count-a[1].count);
+  document.getElementById('other-lb-games').innerHTML=byGames.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div></div><div class="lb-stat">'+s.count+'</div></div>'
+  ).join('');
+
+  const byBest=[...pl].sort((a,b)=>otherCfg.lowerIsBetter?a[1].best-b[1].best:b[1].best-a[1].best);
+  document.getElementById('other-lb-best').innerHTML=byBest.map(([name,s],i)=>
+    '<div class="lb-row"><div class="lb-rank">'+rankIcon(i,total)+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+s.bestDate+'</div></div><div class="lb-stat">'+otherCfg.fmt(s.best)+'</div></div>'
+  ).join('');
+}
+
+function renderOtherTrends(){
+  otherMakeToggle('other-trends-toggle','trends');
+  const data=filterByWindow(OTHER_ALL,otherWindowState.trends);
+  const dates=[...new Set(data.map(r=>r.date))].sort();
+
+  OTHER_PLAYERS.forEach(p=>{if(!(p in otherPlayerVisibility))otherPlayerVisibility[p]=true;});
+
+  const datasets=OTHER_PLAYERS.map((p,i)=>{
+    const byDate={};
+    data.filter(r=>r.player===p).forEach(r=>byDate[r.date]=r.score);
+    return{
+      label:p,
+      data:dates.map(d=>byDate[d]!=null?byDate[d]:null),
+      borderColor:COLORS[i%COLORS.length],
+      backgroundColor:COLORS[i%COLORS.length]+'22',
+      tension:0.3,spanGaps:true,pointRadius:3,borderWidth:2,
+      hidden:!otherPlayerVisibility[p]
+    };
+  });
+
+  document.getElementById('other-player-toggles').innerHTML=OTHER_PLAYERS.map((p,i)=>
+    '<span class="player-toggle '+(otherPlayerVisibility[p]?'':'off')+'" onclick="toggleOtherPlayer(\''+p.replace(/'/g,"\\'")+'\')"><span class="dot" style="background:'+COLORS[i%COLORS.length]+'"></span>'+p+'</span>'
+  ).join('');
+
+  if(otherChart)otherChart.destroy();
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gc=isDark?'#2e2e2b':'#e8e8e4',tc=isDark?'#9c9a92':'#888882';
+
+  otherChart=new Chart(document.getElementById('other-trends-chart').getContext('2d'),{
+    type:'line',
+    data:{labels:dates.map(fmtDate),datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            title:function(items){return dates[items[0].dataIndex];},
+            label:function(ctx){
+              if(ctx.parsed.y==null)return ctx.dataset.label+': —';
+              return ctx.dataset.label+': '+otherCfg.fmt(ctx.parsed.y);
+            }
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{color:tc,maxTicksLimit:8,font:{size:11}},grid:{color:gc}},
+        y:{ticks:{color:tc,font:{size:11},callback:v=>otherCfg.fmt(v)},grid:{color:gc}}
+      }
+    }
+  });
+}
+function toggleOtherPlayer(p){
+  otherPlayerVisibility[p]=!otherPlayerVisibility[p];
+  renderOtherTrends();
+}
+
+function renderOtherH2H(){
+  const p1=document.getElementById('other-h2h-p1').value,p2=document.getElementById('other-h2h-p2').value;
+  if(!p1||!p2||p1===p2){
+    document.getElementById('other-h2h-stats').innerHTML='<div class="empty" style="grid-column:1/-1">Select two different players</div>';
+    document.getElementById('other-h2h-games').innerHTML='';
+    document.getElementById('other-blowout-card').style.display='none';
+    return;
+  }
+  const shared={};
+  OTHER_ALL.filter(r=>r.player===p1).forEach(r=>shared[r.date]={p1:r.score});
+  OTHER_ALL.filter(r=>r.player===p2).forEach(r=>{if(shared[r.date]){shared[r.date].p2=r.score;}});
+  const games=Object.entries(shared).filter(([,v])=>v.p2!=null).sort((a,b)=>a[0]<b[0]?1:-1);
+
+  let w1=0,w2=0,ties=0,sum1=0,sum2=0,biggest=null,biggestDiff=0;
+  games.forEach(([date,v])=>{
+    sum1+=v.p1;sum2+=v.p2;
+    const p1Better=otherCfg.lowerIsBetter?v.p1<v.p2:v.p1>v.p2;
+    const p2Better=otherCfg.lowerIsBetter?v.p2<v.p1:v.p2>v.p1;
+    if(p1Better)w1++;else if(p2Better)w2++;else ties++;
+    const d=Math.abs(v.p1-v.p2);
+    if(d>biggestDiff){biggestDiff=d;biggest={date:date,p1:v.p1,p2:v.p2};}
+  });
+
+  const total=games.length,avg1=total?otherCfg.fmt(sum1/total):'—',avg2=total?otherCfg.fmt(sum2/total):'—';
+  const p1Winning=w1>w2,p2Winning=w2>w1;
+  const icon1=p1Winning?'🏆':(p2Winning?'🤮':'');
+  const icon2=p2Winning?'🏆':(p1Winning?'🤮':'');
+
+  document.getElementById('other-h2h-stats').innerHTML=
+    '<div class="h2h-player"><div class="icon">'+icon1+'</div><div class="big">'+w1+'</div><div class="name">'+p1+'</div><div class="avg">avg '+avg1+'</div></div>'+
+    '<div class="h2h-vs">'+(ties?ties+' tie'+(ties>1?'s':''):'vs')+'</div>'+
+    '<div class="h2h-player"><div class="icon">'+icon2+'</div><div class="big">'+w2+'</div><div class="name">'+p2+'</div><div class="avg">avg '+avg2+'</div></div>';
+  document.getElementById('other-h2h-bar-fill').style.width=(total?Math.round(w1/total*100):50)+'%';
+  document.getElementById('other-h2h-bar-label').textContent=total?total+' shared game'+(total>1?'s':''):'No shared games';
+
+  if(biggest){
+    let winnerName,winnerScore,loserName,loserScore;
+    const p1IsWinner=otherCfg.lowerIsBetter?biggest.p1<biggest.p2:biggest.p1>biggest.p2;
+    if(p1IsWinner){winnerName=p1;winnerScore=biggest.p1;loserName=p2;loserScore=biggest.p2;}
+    else{winnerName=p2;winnerScore=biggest.p2;loserName=p1;loserScore=biggest.p1;}
+    document.getElementById('other-blowout-card').style.display='block';
+    document.getElementById('other-blowout-content').innerHTML=
+      '<div class="blowout-row"><span style="font-size:18px">🏆</span><div class="blowout-name">'+winnerName+'</div><div class="blowout-score">'+otherCfg.fmt(winnerScore)+'</div></div>'+
+      '<div class="blowout-row"><span style="font-size:18px">🤮</span><div class="blowout-name">'+loserName+'</div><div class="blowout-score">'+otherCfg.fmt(loserScore)+'</div></div>'+
+      '<div class="blowout-diff">'+biggest.date+' · '+otherCfg.fmt(biggestDiff)+' difference</div>';
+  }else{
+    document.getElementById('other-blowout-card').style.display='none';
+  }
+
+  document.getElementById('other-h2h-games').innerHTML=games.length?games.map(([date,v])=>{
+    const p1Better=otherCfg.lowerIsBetter?v.p1<v.p2:v.p1>v.p2;
+    const p2Better=otherCfg.lowerIsBetter?v.p2<v.p1:v.p2>v.p1;
+    const c1=p1Better?'win':p2Better?'loss':'',c2=p2Better?'win':p1Better?'loss':'';
+    const diff=v.p1-v.p2;
+    return '<div class="h2h-game-row"><div class="h2h-date">'+fmtDate(date)+'</div><div class="h2h-score '+c1+' left">'+otherCfg.fmt(v.p1)+'</div><div class="h2h-diff">'+(diff===0?'tie':otherCfg.fmt(Math.abs(diff)))+'</div><div class="h2h-score '+c2+'">'+otherCfg.fmt(v.p2)+'</div></div>';
+  }).join(''):'<div class="empty">No shared games</div>';
+}
+function initOtherH2H(){
+  const s1=document.getElementById('other-h2h-p1'),s2=document.getElementById('other-h2h-p2');
+  [s1,s2].forEach(s=>s.innerHTML=OTHER_PLAYERS.map(p=>'<option value="'+p+'">'+p+'</option>').join(''));
+  if(OTHER_PLAYERS.length>=2)s2.value=OTHER_PLAYERS[1];
+  s1.onchange=renderOtherH2H;s2.onchange=renderOtherH2H;
+  renderOtherH2H();
+}
+
+function showOtherView(name){
+  otherActiveView=name;
+  document.querySelectorAll('#other-main .view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('other-view-'+name).classList.add('active');
+  document.querySelectorAll('#other-nav button').forEach((b,i)=>{
+    b.classList.toggle('active',['leaderboard','today','trends','h2h'][i]===name);
+  });
+  renderOtherActive();
+}
+function renderOtherActive(){
+  if(otherActiveView==='today')renderOtherToday();
+  else if(otherActiveView==='leaderboard')renderOtherLeaderboard();
+  else if(otherActiveView==='trends')renderOtherTrends();
+  else if(otherActiveView==='h2h')renderOtherH2H();
 }
 
 async function load(){
