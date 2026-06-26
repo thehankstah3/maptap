@@ -251,6 +251,17 @@
   </div>
 </main>
 
+<main id="overall-main" style="display:none;">
+  <div class="card blowout-card">
+    <div class="blowout-label">🏆 Best overall gamer</div>
+    <div id="overall-best"></div>
+  </div>
+  <div class="card"><div class="card-label">🎮 Most active player</div><div id="overall-active"></div></div>
+  <div class="card"><div class="card-label">📝 Best wordsmith</div><div id="overall-wordsmith"></div></div>
+  <div class="card"><div class="card-label">🤡 Worst gamer</div><div id="overall-worst"></div></div>
+  <div class="card"><div class="card-label">Leaders by game</div><div id="overall-by-game"></div></div>
+</main>
+
 <script>
 let ALL=[],PLAYERS=[],CHAT='',activeView='leaderboard',trendsChart=null,currentRound=0;
 let playerVisibility={};
@@ -597,6 +608,16 @@ const GAME_CONFIG={
   patches:{label:'Patches',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
   tango:{label:'Tango',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
   queens:{label:'Queens',lowerIsBetter:true,statLabel:'Avg time',bestLabel:'Fastest time',fmt:fmtTime},
+  overall:{label:'🏆 Total'},
+};
+const GAME_TITLES={
+  maptap:'🌍 Best Tapper',
+  wordle:'📝 Best Wordsmith',
+  wend:'🌀 Wend Champion',
+  zip:'🏁 Zip Champion',
+  patches:'🧶 Patches Pro',
+  tango:'☯️ Tango Master',
+  queens:'👑 Queen of Queens',
 };
 const GAME_LABELS=Object.fromEntries(Object.entries(GAME_CONFIG).map(([k,v])=>[k,v.label]));
 const DEFAULT_OTHER_CFG={lowerIsBetter:true,statLabel:'Avg score',bestLabel:'Best single game',fmt:s=>s};
@@ -636,6 +657,7 @@ async function selectChat(slug){
     GAMES=await(await fetch(API_BASE+'/api/games/'+encodeURIComponent(slug))).json();
   }catch(e){GAMES=['maptap'];}
   activeGame=GAMES.includes('maptap')?'maptap':GAMES[0];
+  if(GAMES.length>=2)GAMES=[...GAMES,'overall'];
   renderGameTabs();
   await selectGame(activeGame);
 }
@@ -645,10 +667,15 @@ async function selectGame(game){
   renderGameTabs();
   document.getElementById('maptap-main').style.display=game==='maptap'?'':'none';
   document.getElementById('maptap-nav').style.display=game==='maptap'?'':'none';
-  document.getElementById('other-main').style.display=game==='maptap'?'none':'';
-  document.getElementById('other-nav').style.display=game==='maptap'?'none':'';
+  document.getElementById('other-main').style.display=(game!=='maptap'&&game!=='overall')?'':'none';
+  document.getElementById('other-nav').style.display=(game!=='maptap'&&game!=='overall')?'':'none';
+  document.getElementById('overall-main').style.display=game==='overall'?'':'none';
 
-  if(game==='maptap'){
+  if(game==='overall'){
+    document.getElementById('export-date').textContent='';
+    document.title='Henry\'s Dashboard — '+activeChat;
+    await renderOverall();
+  } else if(game==='maptap'){
     try{
       const json=await fetchChat(activeChat);
       CHAT=json.chat;PLAYERS=json.players;ALL=json.scores;
@@ -669,6 +696,81 @@ async function selectGame(game){
       initOtherH2H();renderOtherActive();
     }catch(e){document.getElementById('export-date').textContent='Could not load data';console.error(e);}
   }
+}
+
+async function renderOverall(){
+  const realGames=GAMES.filter(g=>g!=='overall');
+  const perGame={};
+  await Promise.all(realGames.map(async g=>{
+    try{
+      if(g==='maptap'){
+        const json=await fetchChat(activeChat);
+        perGame[g]=json.scores.map(r=>({player:r.player,score:r.total}));
+      } else {
+        const json=await(await fetch(API_BASE+'/api/results/'+encodeURIComponent(activeChat)+'/'+encodeURIComponent(g))).json();
+        perGame[g]=json.results.map(r=>({player:r.player,score:r.score}));
+      }
+    }catch(e){perGame[g]=[];}
+  }));
+
+  const playerStats={};
+  const gameLeaders={};
+
+  realGames.forEach(g=>{
+    const rows=perGame[g]||[];
+    if(!rows.length)return;
+    const lowerIsBetter=g!=='maptap';
+    const stats={};
+    rows.forEach(r=>{
+      if(!stats[r.player])stats[r.player]={sum:0,count:0};
+      stats[r.player].sum+=r.score;stats[r.player].count++;
+    });
+    const ranked=Object.entries(stats).sort((a,b)=>lowerIsBetter?(a[1].sum/a[1].count)-(b[1].sum/b[1].count):(b[1].sum/b[1].count)-(a[1].sum/a[1].count));
+    const total=ranked.length;
+    ranked.forEach(([name,s],i)=>{
+      if(!playerStats[name])playerStats[name]={gamesPlayed:0,firstPlaceCount:0,rankPctSum:0,rankPctCount:0};
+      playerStats[name].gamesPlayed+=s.count;
+      if(i===0)playerStats[name].firstPlaceCount++;
+      playerStats[name].rankPctSum+=total>1?i/(total-1):0;
+      playerStats[name].rankPctCount++;
+    });
+    const [leaderName,leaderStat]=ranked[0];
+    const cfg=GAME_CONFIG[g]||DEFAULT_OTHER_CFG;
+    const fmt=g==='maptap'?(s=>s.toFixed(0)):cfg.fmt;
+    gameLeaders[g]={player:leaderName,stat:fmt(leaderStat.sum/leaderStat.count)};
+  });
+
+  const entries=Object.entries(playerStats).map(([name,s])=>[name,{...s,avgRankPct:s.rankPctSum/s.rankPctCount}]);
+
+  const row=(emoji,name,sub)=>'<div class="lb-row"><div class="lb-rank">'+emoji+'</div><div class="lb-main"><div class="lb-name">'+name+'</div><div class="lb-sub">'+sub+'</div></div></div>';
+  const empty='<div class="empty">Not enough data yet</div>';
+
+  if(entries.length){
+    const bestOverall=[...entries].sort((a,b)=>b[1].firstPlaceCount-a[1].firstPlaceCount||a[1].avgRankPct-b[1].avgRankPct)[0];
+    document.getElementById('overall-best').innerHTML=row('🏆',bestOverall[0],'#1 in '+bestOverall[1].firstPlaceCount+' game'+(bestOverall[1].firstPlaceCount!==1?'s':''));
+
+    const mostActive=[...entries].sort((a,b)=>b[1].gamesPlayed-a[1].gamesPlayed)[0];
+    document.getElementById('overall-active').innerHTML=row('🎮',mostActive[0],mostActive[1].gamesPlayed+' games played');
+
+    const worstGamer=[...entries].sort((a,b)=>b[1].avgRankPct-a[1].avgRankPct)[0];
+    document.getElementById('overall-worst').innerHTML=row('🤡',worstGamer[0],'Needs some practice');
+  }else{
+    document.getElementById('overall-best').innerHTML=empty;
+    document.getElementById('overall-active').innerHTML=empty;
+    document.getElementById('overall-worst').innerHTML=empty;
+  }
+
+  const wordsmith=gameLeaders['wordle'];
+  document.getElementById('overall-wordsmith').innerHTML=wordsmith
+    ?row('📝',wordsmith.player,'Avg '+wordsmith.stat+' on Wordle')
+    :'<div class="empty">No Wordle data</div>';
+
+  document.getElementById('overall-by-game').innerHTML=realGames.map(g=>{
+    const leader=gameLeaders[g];
+    const title=GAME_TITLES[g]||GAME_LABELS[g]||g;
+    if(!leader)return '<div class="lb-row"><div class="lb-main"><div class="lb-name">'+title+'</div><div class="lb-sub">No data</div></div></div>';
+    return '<div class="lb-row"><div class="lb-main"><div class="lb-name">'+title+'</div><div class="lb-sub">'+leader.player+'</div></div><div class="lb-stat">'+leader.stat+'</div></div>';
+  }).join('');
 }
 
 function otherMakeToggle(id,key){
