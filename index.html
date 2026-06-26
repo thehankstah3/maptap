@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maptap Analytics</title>
+<title>Henry's Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
@@ -134,8 +134,8 @@
 <body>
 
 <header>
-  <div class="title">🌎 MapTap Analytics 🌎</div>
-  <div class="tagline">who's got the meanest tap?</div>
+  <div class="title">🌎 Henry's Dashboard 🌎</div>
+  <div class="tagline">Who's really the best</div>
   <select class="chat-select" id="chat-select"></select>
   <div class="export-date" id="export-date"></div>
 </header>
@@ -654,7 +654,7 @@ async function selectGame(game){
       CHAT=json.chat;PLAYERS=json.players;ALL=json.scores;
       playerVisibility={};
       document.getElementById('export-date').textContent='Updated '+json.exported_at;
-      document.title='MapTap — '+CHAT;
+      document.title='Henry\'s Dashboard — '+CHAT;
       initH2H();renderActive();
     }catch(e){document.getElementById('export-date').textContent='Could not load data';console.error(e);}
   } else {
@@ -665,7 +665,7 @@ async function selectGame(game){
       OTHER_ALL=json.results;
       otherPlayerVisibility={};
       document.getElementById('export-date').textContent='Updated '+json.exported_at;
-      document.title='MapTap — '+json.chat;
+      document.title='Henry\'s Dashboard — '+json.chat;
       initOtherH2H();renderOtherActive();
     }catch(e){document.getElementById('export-date').textContent='Could not load data';console.error(e);}
   }

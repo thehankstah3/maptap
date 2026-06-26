@@ -1,4 +1,4 @@
-const FIELDS = ["playerName", "chatName", "apiKey"];
+const FIELDS = ["playerName", "chats", "apiKey"];
 
 chrome.storage.sync.get(FIELDS, (cfg) => {
   FIELDS.forEach((f) => {
