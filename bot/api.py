@@ -29,8 +29,12 @@ def close_conn(exception=None):
 
 @app.get("/api/chats")
 def list_chats():
+    player = request.args.get("player")
     with get_conn().cursor() as cur:
-        cur.execute("SELECT DISTINCT chat FROM results ORDER BY chat")
+        if player:
+            cur.execute("SELECT DISTINCT chat FROM results WHERE player = %s ORDER BY chat", (player,))
+        else:
+            cur.execute("SELECT DISTINCT chat FROM results ORDER BY chat")
         rows = cur.fetchall()
     return jsonify([r[0] for r in rows])
 

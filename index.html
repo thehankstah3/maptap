@@ -23,6 +23,8 @@
   .title{font-size:20px;font-weight:700;letter-spacing:-0.3px;line-height:1.2;}
   .tagline{font-size:13px;color:var(--muted);margin-top:4px;font-style:italic;}
   .chat-select{font-size:17px;font-weight:700;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:7px 14px;color:var(--text);cursor:pointer;text-align:center;}
+  .username-filter{display:block;margin:14px auto 0;max-width:260px;width:100%;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);text-align:center;}
+  .username-filter::placeholder{color:var(--muted);}
   .export-date{font-size:11px;color:var(--muted);margin-top:1px;}
 
   nav{display:flex;justify-content:center;gap:6px;padding:16px 12px 0;max-width:680px;margin:0 auto;overflow-x:auto;scrollbar-width:none;}
@@ -136,6 +138,7 @@
 <header>
   <div class="title">🌎 Henry's Dashboard 🌎</div>
   <div class="tagline">Who's really the best</div>
+  <input type="text" class="username-filter" id="username-filter" placeholder="Your name (shows only your chats)">
   <select class="chat-select" id="chat-select"></select>
   <div class="export-date" id="export-date"></div>
 </header>
@@ -1011,11 +1014,25 @@ function renderOtherActive(){
 }
 
 async function load(){
-  const slugs=await(await fetch(API_BASE+'/api/chats')).json();
+  const usernameInput=document.getElementById('username-filter');
+  const savedUsername=localStorage.getItem('username')||'';
+  usernameInput.value=savedUsername;
+
+  const chatsUrl=API_BASE+'/api/chats'+(savedUsername?'?player='+encodeURIComponent(savedUsername):'');
+  const slugs=await(await fetch(chatsUrl)).json();
   const metas=await Promise.all(slugs.map(fetchChat));
   CHATS=slugs.map((slug,i)=>({slug,label:metas[i].chat}));
 
   document.getElementById('chat-select').addEventListener('change',e=>selectChat(e.target.value));
+  usernameInput.addEventListener('change',()=>{
+    localStorage.setItem('username',usernameInput.value.trim());
+    location.reload();
+  });
+
+  if(!CHATS.length){
+    document.getElementById('export-date').textContent=savedUsername?'No chats found for "'+savedUsername+'"':'No chats found';
+    return;
+  }
 
   const params=new URLSearchParams(location.search);
   const requested=params.get('chat');
