@@ -143,19 +143,19 @@
 <div class="game-tabs" id="game-tabs"></div>
 
 <nav id="maptap-nav">
-  <button class="active" onclick="showView('leaderboard')">Leaderboard</button>
-  <button onclick="showView('today')">Today</button>
+  <button class="active" onclick="showView('today')">Today</button>
   <button onclick="showView('trends')">Trends</button>
   <button onclick="showView('rounds')">By round</button>
   <button onclick="showView('h2h')">Head to head</button>
+  <button onclick="showView('leaderboard')">Leaderboard</button>
 </nav>
 
 <main id="maptap-main">
-  <div class="view" id="view-today">
+  <div class="view active" id="view-today">
     <div class="card"><div class="card-label" id="today-label">Today</div><div id="today-list"></div></div>
   </div>
 
-  <div class="view active" id="view-leaderboard">
+  <div class="view" id="view-leaderboard">
     <div class="time-toggle" id="lb-toggle"></div>
     <div class="card"><div class="card-label">Avg total score</div><div id="lb-avg"></div></div>
     <div class="card"><div class="card-label">Most games played</div><div id="lb-games"></div></div>
@@ -201,18 +201,18 @@
 </main>
 
 <nav id="other-nav" style="display:none;">
-  <button class="active" onclick="showOtherView('leaderboard')">Leaderboard</button>
-  <button onclick="showOtherView('today')">Today</button>
+  <button class="active" onclick="showOtherView('today')">Today</button>
   <button onclick="showOtherView('trends')">Trends</button>
   <button onclick="showOtherView('h2h')">Head to head</button>
+  <button onclick="showOtherView('leaderboard')">Leaderboard</button>
 </nav>
 
 <main id="other-main" style="display:none;">
-  <div class="view" id="other-view-today">
+  <div class="view active" id="other-view-today">
     <div class="card"><div class="card-label" id="other-today-label">Today</div><div id="other-today-list"></div></div>
   </div>
 
-  <div class="view active" id="other-view-leaderboard">
+  <div class="view" id="other-view-leaderboard">
     <div class="time-toggle" id="other-lb-toggle"></div>
     <div class="card"><div class="card-label" id="other-lb-avg-label">Avg score</div><div id="other-lb-avg"></div></div>
     <div class="card"><div class="card-label">Most games played</div><div id="other-lb-games"></div></div>
@@ -263,7 +263,7 @@
 </main>
 
 <script>
-let ALL=[],PLAYERS=[],CHAT='',activeView='leaderboard',trendsChart=null,currentRound=0;
+let ALL=[],PLAYERS=[],CHAT='',activeView='today',trendsChart=null,currentRound=0;
 let playerVisibility={};
 
 let CHATS=[];
@@ -585,7 +585,7 @@ function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('nav button').forEach((b,i)=>{
-    b.classList.toggle('active',['leaderboard','today','trends','rounds','h2h'][i]===name);
+    b.classList.toggle('active',['today','trends','rounds','h2h','leaderboard'][i]===name);
   });
   renderActive();
 }
@@ -623,7 +623,7 @@ const GAME_LABELS=Object.fromEntries(Object.entries(GAME_CONFIG).map(([k,v])=>[k
 const DEFAULT_OTHER_CFG={lowerIsBetter:true,statLabel:'Avg score',bestLabel:'Best single game',fmt:s=>s};
 
 let OTHER_ALL=[],OTHER_PLAYERS=[],otherCfg=DEFAULT_OTHER_CFG;
-let otherActiveView='leaderboard',otherChart=null,otherPlayerVisibility={};
+let otherActiveView='today',otherChart=null,otherPlayerVisibility={};
 let otherWindowState={leaderboard:2,trends:1};
 
 function renderChatSelect(){
@@ -999,7 +999,7 @@ function showOtherView(name){
   document.querySelectorAll('#other-main .view').forEach(v=>v.classList.remove('active'));
   document.getElementById('other-view-'+name).classList.add('active');
   document.querySelectorAll('#other-nav button').forEach((b,i)=>{
-    b.classList.toggle('active',['leaderboard','today','trends','h2h'][i]===name);
+    b.classList.toggle('active',['today','trends','h2h','leaderboard'][i]===name);
   });
   renderOtherActive();
 }
