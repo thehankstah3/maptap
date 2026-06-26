@@ -13,7 +13,7 @@ def migrate(json_path):
     conn = db.connect(DATABASE_URL)
     inserted = 0
     for row in data["scores"]:
-        message_id = f"json-import:maptap:{chat}:{row['date']}:{row['player']}"
+        message_id = f"maptap:{chat}:{row['date']}:{row['player']}"
         if db.insert_result(
             conn,
             message_id=message_id,

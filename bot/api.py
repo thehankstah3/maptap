@@ -75,7 +75,7 @@ def post_result():
     if not required.issubset(data):
         abort(400, "Missing required fields: " + ", ".join(sorted(required - data.keys())))
 
-    message_id = f"ext:{data['game']}:{data['chat']}:{data['date']}:{data['player']}"
+    message_id = f"{data['game']}:{data['chat']}:{data['date']}:{data['player']}"
     inserted = db.insert_result(
         get_conn(),
         message_id=message_id,

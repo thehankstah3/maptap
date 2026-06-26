@@ -59,7 +59,7 @@ async def on_message(message):
     if maptap is not None:
         inserted = db.insert_result(
             conn,
-            message_id=message.id,
+            message_id=f"maptap:{chat}:{maptap['date']}:{player}",
             game="maptap",
             chat=chat,
             player=player,
@@ -77,7 +77,7 @@ async def on_message(message):
         date_str = message.created_at.date().isoformat()
         inserted = db.insert_result(
             conn,
-            message_id=message.id,
+            message_id=f"wordle:{chat}:{date_str}:{player}",
             game="wordle",
             chat=chat,
             player=player,
@@ -97,7 +97,7 @@ async def on_message(message):
         date_str = message.created_at.date().isoformat()
         inserted = db.insert_result(
             conn,
-            message_id=message.id,
+            message_id=f"{game}:{chat}:{date_str}:{player}",
             game=game,
             chat=chat,
             player=player,
