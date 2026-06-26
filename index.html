@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Henry's Dashboard</title>
+<title>Daily/s</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
@@ -23,8 +23,11 @@
   .title{font-size:20px;font-weight:700;letter-spacing:-0.3px;line-height:1.2;}
   .tagline{font-size:13px;color:var(--muted);margin-top:4px;font-style:italic;}
   .chat-select{font-size:17px;font-weight:700;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:7px 14px;color:var(--text);cursor:pointer;text-align:center;}
-  .username-filter{display:block;margin:14px auto 0;max-width:260px;width:100%;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);text-align:center;}
+  .username-filter{display:block;margin:10px auto 0;max-width:260px;width:100%;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);text-align:center;}
   .username-filter::placeholder{color:var(--muted);}
+  .title-row{display:flex;align-items:center;justify-content:center;gap:4px;}
+  .username-toggle{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:2px 4px;line-height:1;}
+  .username-toggle:hover{color:var(--text);}
   .export-date{font-size:11px;color:var(--muted);margin-top:1px;}
 
   nav{display:flex;justify-content:center;gap:6px;padding:16px 12px 0;max-width:680px;margin:0 auto;overflow-x:auto;scrollbar-width:none;}
@@ -136,9 +139,12 @@
 <body>
 
 <header>
-  <div class="title">🌎 Henry's Dashboard 🌎</div>
+  <div class="title-row">
+    <div class="title">🌎 Daily/s 🌎</div>
+    <button class="username-toggle" id="username-toggle" title="Set your name" aria-label="Set your name">▾</button>
+  </div>
   <div class="tagline">Who's really the best</div>
-  <input type="text" class="username-filter" id="username-filter" placeholder="Your name (shows only your chats)">
+  <input type="text" class="username-filter" id="username-filter" placeholder="Your name (shows only your chats)" style="display:none;">
   <select class="chat-select" id="chat-select"></select>
   <div class="export-date" id="export-date"></div>
 </header>
@@ -676,7 +682,7 @@ async function selectGame(game){
 
   if(game==='overall'){
     document.getElementById('export-date').textContent='';
-    document.title='Henry\'s Dashboard — '+activeChat;
+    document.title='Daily/s — '+activeChat;
     await renderOverall();
   } else if(game==='maptap'){
     try{
@@ -684,7 +690,7 @@ async function selectGame(game){
       CHAT=json.chat;PLAYERS=json.players;ALL=json.scores;
       playerVisibility={};
       document.getElementById('export-date').textContent='Updated '+json.exported_at;
-      document.title='Henry\'s Dashboard — '+CHAT;
+      document.title='Daily/s — '+CHAT;
       initH2H();renderActive();
     }catch(e){document.getElementById('export-date').textContent='Could not load data';console.error(e);}
   } else {
@@ -695,7 +701,7 @@ async function selectGame(game){
       OTHER_ALL=json.results;
       otherPlayerVisibility={};
       document.getElementById('export-date').textContent='Updated '+json.exported_at;
-      document.title='Henry\'s Dashboard — '+json.chat;
+      document.title='Daily/s — '+json.chat;
       initOtherH2H();renderOtherActive();
     }catch(e){document.getElementById('export-date').textContent='Could not load data';console.error(e);}
   }
@@ -1024,6 +1030,11 @@ async function load(){
   CHATS=slugs.map((slug,i)=>({slug,label:metas[i].chat}));
 
   document.getElementById('chat-select').addEventListener('change',e=>selectChat(e.target.value));
+  document.getElementById('username-toggle').addEventListener('click',()=>{
+    const visible=usernameInput.style.display!=='none';
+    usernameInput.style.display=visible?'none':'block';
+    if(!visible)usernameInput.focus();
+  });
   usernameInput.addEventListener('change',()=>{
     localStorage.setItem('username',usernameInput.value.trim());
     location.reload();
