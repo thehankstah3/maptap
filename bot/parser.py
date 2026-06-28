@@ -75,18 +75,24 @@ def _no_or_num(s):
     return 0 if s.lower() == "no" else int(s)
 
 
-def _mmss_to_seconds(mm, ss):
-    return int(mm) * 60 + int(ss)
+def _time_to_seconds(time_str):
+    """Converts 'MM:SS' or 'H:MM:SS' (or longer) to total seconds."""
+    seconds = 0
+    for part in time_str.split(":"):
+        seconds = seconds * 60 + int(part)
+    return seconds
 
 
-WEND_RE = re.compile(r"Wend\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🌀", re.IGNORECASE)
+TIME_RE = r"([\d:]+)"
+
+WEND_RE = re.compile(r"Wend\s+#(\d+)\s*\|\s*" + TIME_RE + r"\s*🌀", re.IGNORECASE)
 WEND_DETAIL_RE = re.compile(r"With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+backtracks", re.IGNORECASE)
-ZIP_RE = re.compile(r"Zip\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🏁", re.IGNORECASE)
+ZIP_RE = re.compile(r"Zip\s+#(\d+)\s*\|\s*" + TIME_RE + r"\s*🏁", re.IGNORECASE)
 ZIP_DETAIL_RE = re.compile(r"With\s+(no|\d+)\s+backtracks", re.IGNORECASE)
-PATCHES_RE = re.compile(r"Patches\s+#(\d+)\s*\|\s*(\d+):(\d+)\s*🧶", re.IGNORECASE)
+PATCHES_RE = re.compile(r"Patches\s+#(\d+)\s*\|\s*" + TIME_RE + r"\s*🧶", re.IGNORECASE)
 PATCHES_DETAIL_RE = re.compile(r"With\s+(no|\d+)\s+hints?\s*&\s*(no|\d+)\s+redraws", re.IGNORECASE)
-TANGO_RE = re.compile(r"Tango\s+#(\d+)\s*\|\s*(\d+):(\d+)", re.IGNORECASE)
-QUEENS_RE = re.compile(r"Queens\s+#(\d+)\s*\|\s*(\d+):(\d+)", re.IGNORECASE)
+TANGO_RE = re.compile(r"Tango\s+#(\d+)\s*\|\s*" + TIME_RE, re.IGNORECASE)
+QUEENS_RE = re.compile(r"Queens\s+#(\d+)\s*\|\s*" + TIME_RE, re.IGNORECASE)
 HINTS_RE = re.compile(r"with\s+(no|\d+)\s+hints", re.IGNORECASE)
 
 
@@ -99,8 +105,8 @@ def parse_wend_message(content):
     match = WEND_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss = match.groups()
-    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    puzzle, time_str = match.groups()
+    result = {"puzzle": int(puzzle), "score": _time_to_seconds(time_str)}
     detail = WEND_DETAIL_RE.search(content)
     if detail:
         result["hints"] = _no_or_num(detail.group(1))
@@ -113,8 +119,8 @@ def parse_zip_message(content):
     match = ZIP_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss = match.groups()
-    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    puzzle, time_str = match.groups()
+    result = {"puzzle": int(puzzle), "score": _time_to_seconds(time_str)}
     detail = ZIP_DETAIL_RE.search(content)
     if detail:
         result["backtracks"] = _no_or_num(detail.group(1))
@@ -126,8 +132,8 @@ def parse_patches_message(content):
     match = PATCHES_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss = match.groups()
-    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    puzzle, time_str = match.groups()
+    result = {"puzzle": int(puzzle), "score": _time_to_seconds(time_str)}
     detail = PATCHES_DETAIL_RE.search(content)
     if detail:
         result["hints"] = _no_or_num(detail.group(1))
@@ -140,8 +146,8 @@ def parse_tango_message(content):
     match = TANGO_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss = match.groups()
-    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    puzzle, time_str = match.groups()
+    result = {"puzzle": int(puzzle), "score": _time_to_seconds(time_str)}
     hints = HINTS_RE.search(content)
     if hints:
         result["hints"] = _no_or_num(hints.group(1))
@@ -153,8 +159,8 @@ def parse_queens_message(content):
     match = QUEENS_RE.search(content)
     if not match:
         return None
-    puzzle, mm, ss = match.groups()
-    result = {"puzzle": int(puzzle), "score": _mmss_to_seconds(mm, ss)}
+    puzzle, time_str = match.groups()
+    result = {"puzzle": int(puzzle), "score": _time_to_seconds(time_str)}
     hints = HINTS_RE.search(content)
     if hints:
         result["hints"] = _no_or_num(hints.group(1))
