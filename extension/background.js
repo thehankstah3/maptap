@@ -24,13 +24,22 @@ chrome.runtime.onMessage.addListener((message) => {
             data: message.data,
             score: message.score,
           }),
-        }).then((res) => res.ok)
+        }).then(async (res) => ({ ok: res.ok, inserted: res.ok && (await res.json()).inserted }))
       )
     )
       .then((results) => {
-        const ok = results.every(Boolean);
-        chrome.action.setBadgeText({ text: ok ? "✓" : "!" });
-        chrome.action.setBadgeBackgroundColor({ color: ok ? "#16a34a" : "#dc2626" });
+        const allOk = results.every((r) => r.ok);
+        const anyInserted = results.some((r) => r.inserted);
+        let text, color;
+        if (!allOk) {
+          text = "!"; color = "#dc2626";
+        } else if (!anyInserted) {
+          text = "DUP"; color = "#ca8a04";
+        } else {
+          text = "✓"; color = "#16a34a";
+        }
+        chrome.action.setBadgeText({ text });
+        chrome.action.setBadgeBackgroundColor({ color });
         setTimeout(() => chrome.action.setBadgeText({ text: "" }), 4000);
       })
       .catch((err) => console.error("MapTap Score Logger: failed to submit score", err));
